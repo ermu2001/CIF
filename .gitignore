@@ -1,0 +1,7 @@
+**__pycache__/
+
+# LOCAL
+MODELS/
+DATAS/
+OUTPUTS/
+tmp/

@@ -46,13 +46,13 @@ from transformers import AutoConfig, AutoImageProcessor, AutoModelForImageClassi
 from transformers.utils import check_min_version, send_example_telemetry
 from transformers.utils.versions import require_version
 
+from tasks.utils import setup_model
+
 
 # Will error if the minimal version of Transformers is not installed. Remove at your own risks.
-check_min_version("4.40.0.dev0")
 
 logger = get_logger(__name__)
 
-require_version("datasets>=2.0.0", "To fix: pip install -r examples/pytorch/image-classification/requirements.txt")
 
 
 def parse_args():
@@ -114,6 +114,12 @@ def parse_args():
         "--learning_rate",
         type=float,
         default=5e-5,
+        help="Initial learning rate (after the potential warmup period) to use.",
+    )
+    parser.add_argument(
+        "--num_workers",
+        type=int,
+        default=0,
         help="Initial learning rate (after the potential warmup period) to use.",
     )
     parser.add_argument("--weight_decay", type=float, default=0.0, help="Weight decay to use.")
@@ -222,10 +228,6 @@ def parse_args():
 def main():
     args = parse_args()
 
-    # Sending telemetry. Tracking the example usage helps us better allocate resources to maintain them. The
-    # information sent is the one passed as arguments along with your Python/PyTorch versions.
-    send_example_telemetry("run_image_classification_no_trainer", args)
-
     # Initialize the accelerator. We will let the accelerator handle device placement for us in this example.
     # If we're using tracking, we also need to initialize it here and it will by default pick up all supported trackers
     # in the environment
@@ -328,25 +330,7 @@ def main():
     #
     # In distributed training, the .from_pretrained methods guarantee that only one local process can concurrently
     # download model & vocab.
-    config = AutoConfig.from_pretrained(
-        args.model_name_or_path,
-        num_labels=len(labels),
-        i2label=id2label,
-        label2id=label2id,
-        finetuning_task="image-classification",
-        trust_remote_code=args.trust_remote_code,
-    )
-    image_processor = AutoImageProcessor.from_pretrained(
-        args.model_name_or_path,
-        trust_remote_code=args.trust_remote_code,
-    )
-    model = AutoModelForImageClassification.from_pretrained(
-        args.model_name_or_path,
-        from_tf=bool(".ckpt" in args.model_name_or_path),
-        config=config,
-        ignore_mismatched_sizes=args.ignore_mismatched_sizes,
-        trust_remote_code=args.trust_remote_code,
-    )
+    model, image_processor = setup_model(args.model_name_or_path)
 
     # Preprocessing the datasets
 
@@ -408,9 +392,9 @@ def main():
         return {"pixel_values": pixel_values, "labels": labels}
 
     train_dataloader = DataLoader(
-        train_dataset, shuffle=True, collate_fn=collate_fn, batch_size=args.per_device_train_batch_size
+        train_dataset, shuffle=True, collate_fn=collate_fn, batch_size=args.per_device_train_batch_size, num_workers=args.num_workers,
     )
-    eval_dataloader = DataLoader(eval_dataset, collate_fn=collate_fn, batch_size=args.per_device_eval_batch_size)
+    eval_dataloader = DataLoader(eval_dataset, collate_fn=collate_fn, batch_size=args.per_device_eval_batch_size, num_workers=args.num_workers,)
 
     # Optimizer
     # Split weights in two groups, one with weight decay and the other not.
@@ -542,6 +526,13 @@ def main():
             if accelerator.sync_gradients:
                 progress_bar.update(1)
                 completed_steps += 1
+                all_loss = accelerator.gather_for_metrics(loss).mean().item()
+                accelerator.log({
+                    "training_step_loss": all_loss,
+                    "learning_rate": lr_scheduler.get_last_lr()[0],
+                },
+                step=completed_steps,)
+
 
             if isinstance(checkpointing_steps, int):
                 if completed_steps % checkpointing_steps == 0:
