@@ -1,4 +1,4 @@
-output_dir="OUTPUTS/cifnet-18-tiny-lr0.1"
+output_dir="OUTPUTS/cifnet-18-tiny-lr0.1-no_downsample"
 seed=42
 
 # dataset
@@ -9,6 +9,7 @@ label_column_name="label"
 # train
 # model_name_or_path=MODELS/cifnet-18
 model_name_or_path=MODELS/cifnet-18-tiny
+# model_name_or_path=MODELS/cifnet-55-cifar
 num_workers=2
 learning_rate=0.1
 lr_scheduler_type="cosine"
