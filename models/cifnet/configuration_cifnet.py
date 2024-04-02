@@ -32,7 +32,7 @@ RESNET_PRETRAINED_CONFIG_ARCHIVE_MAP = {
 }
 
 
-class CifNetConfig(BackboneConfigMixin, PretrainedConfig):
+class CifNetConfig(PretrainedConfig):
     r"""
     This is the configuration class to store the configuration of a [`ResNetModel`]. It is used to instantiate an
     ResNet model according to the specified arguments, defining the model architecture. Instantiating a configuration
@@ -88,52 +88,35 @@ class CifNetConfig(BackboneConfigMixin, PretrainedConfig):
     """
 
     model_type = "resnet"
-    layer_types = ["basic", "bottleneck"]
+    layer_types = ["basic", "bottleneck", "attention"]
 
     def __init__(
         self,
         num_channels=3,
-        embedding_size=64,
+        main_kernel_size=3,
         hidden_sizes=[256, 512, 1024, 2048],
         depths=[3, 4, 6, 3],
         layer_type="bottleneck",
-        hidden_act="relu",
-        downsample_in_first_stage=False,
-        downsample_in_bottleneck=False,
-        downsample=False,
-        out_features=None,
-        out_indices=None,
+        activation="relu",
+        embedding_kwargs={},
+        bottleneck_kwargs={},
         **kwargs,
     ):
         super().__init__(**kwargs)
         if layer_type not in self.layer_types:
             raise ValueError(f"layer_type={layer_type} is not one of {','.join(self.layer_types)}")
+        # input
         self.num_channels = num_channels
-        self.embedding_size = embedding_size
+
+        # some main kwargs
+        self.main_kernel_size = main_kernel_size
         self.hidden_sizes = hidden_sizes
         self.depths = depths
         self.layer_type = layer_type
-        self.hidden_act = hidden_act
-        self.downsample_in_first_stage = downsample_in_first_stage
-        self.downsample_in_bottleneck = downsample_in_bottleneck
-        self.downsample = downsample
-        self.stage_names = ["stem"] + [f"stage{idx}" for idx in range(1, len(depths) + 1)]
-        self._out_features, self._out_indices = get_aligned_output_features_output_indices(
-            out_features=out_features, out_indices=out_indices, stage_names=self.stage_names
-        )
+        self.activation = activation
 
+        # embedding
+        self.embedding_kwargs = embedding_kwargs
 
-class ResNetOnnxConfig(OnnxConfig):
-    torch_onnx_minimum_version = version.parse("1.11")
-
-    @property
-    def inputs(self) -> Mapping[str, Mapping[int, str]]:
-        return OrderedDict(
-            [
-                ("pixel_values", {0: "batch", 1: "num_channels", 2: "height", 3: "width"}),
-            ]
-        )
-
-    @property
-    def atol_for_validation(self) -> float:
-        return 1e-3
+        # bottleneck
+        self.bottleneck_kwargs = bottleneck_kwargs

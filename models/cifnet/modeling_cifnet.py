@@ -15,7 +15,8 @@
 """ PyTorch ResNet model."""
 
 import functools
-from typing import Optional
+import math
+from typing import Optional, Tuple
 
 import torch
 import torch.utils.checkpoint
@@ -61,6 +62,51 @@ RESNET_PRETRAINED_MODEL_ARCHIVE_LIST = [
 ]
 
 
+def rotate_half(x):
+    """Rotates half the hidden dims of the input."""
+    x1 = x[..., : x.shape[-1] // 2]
+    x2 = x[..., x.shape[-1] // 2 :]
+    return torch.cat((-x2, x1), dim=-1)
+
+
+def apply_rotary_pos_emb(q, k, cos, sin, position_ids=None, unsqueeze_dim=1):
+    """Applies Rotary Position Embedding to the query and key tensors.
+
+    Args:
+        q (`torch.Tensor`): The query tensor.
+        k (`torch.Tensor`): The key tensor.
+        cos (`torch.Tensor`): The cosine part of the rotary embedding.
+        sin (`torch.Tensor`): The sine part of the rotary embedding.
+        position_ids (`torch.Tensor`, *optional*):
+            Deprecated and unused.
+        unsqueeze_dim (`int`, *optional*, defaults to 1):
+            The 'unsqueeze_dim' argument specifies the dimension along which to unsqueeze cos[position_ids] and
+            sin[position_ids] so that they can be properly broadcasted to the dimensions of q and k. For example, note
+            that cos[position_ids] and sin[position_ids] have the shape [batch_size, seq_len, head_dim]. Then, if q and
+            k have the shape [batch_size, heads, seq_len, head_dim], then setting unsqueeze_dim=1 makes
+            cos[position_ids] and sin[position_ids] broadcastable to the shapes of q and k. Similarly, if q and k have
+            the shape [batch_size, seq_len, heads, head_dim], then set unsqueeze_dim=2.
+    Returns:
+        `tuple(torch.Tensor)` comprising of the query and key tensors rotated using the Rotary Position Embedding.
+    """
+    cos = cos.unsqueeze(unsqueeze_dim)
+    sin = sin.unsqueeze(unsqueeze_dim)
+    q_embed = (q * cos) + (rotate_half(q) * sin)
+    k_embed = (k * cos) + (rotate_half(k) * sin)
+    return q_embed, k_embed
+
+
+def repeat_kv(hidden_states: torch.Tensor, n_rep: int) -> torch.Tensor:
+    """
+    This is the equivalent of torch.repeat_interleave(x, dim=1, repeats=n_rep). The hidden states go from (batch,
+    num_key_value_heads, seqlen, head_dim) to (batch, num_attention_heads, seqlen, head_dim)
+    """
+    batch, num_key_value_heads, slen, head_dim = hidden_states.shape
+    if n_rep == 1:
+        return hidden_states
+    hidden_states = hidden_states[:, :, None, :, :].expand(batch, num_key_value_heads, n_rep, slen, head_dim)
+    return hidden_states.reshape(batch, num_key_value_heads * n_rep, slen, head_dim)
+
 class CifNetConvLayer(nn.Module):
     def __init__(
         self, in_channels: int, out_channels: int, kernel_size: int = 3, stride: int = 1, activation: str = "relu"
@@ -86,10 +132,18 @@ class CifNetEmbeddings(nn.Module):
 
     def __init__(self, config: CifNetConfig):
         super().__init__()
+        embedding_kwargs = config.embedding_kwargs
         self.embedder = CifNetConvLayer(
-            config.num_channels, config.embedding_size, kernel_size=7, stride=2, activation=config.hidden_act
+            config.num_channels,
+            embedding_kwargs['embedding_size'],
+            kernel_size=embedding_kwargs['embedding_kernel_size_1'],
+            stride=embedding_kwargs['embedding_stride_1'],
+            activation=config.activation,
         )
-        self.pooler = nn.MaxPool2d(kernel_size=3, stride=2, padding=1)
+        self.pooler = nn.MaxPool2d(
+            kernel_size=embedding_kwargs['embedding_kernel_size_2'],
+            stride=embedding_kwargs['embedding_stride_2'],
+        )
         self.num_channels = config.num_channels
 
     def forward(self, pixel_values: Tensor) -> Tensor:
@@ -125,24 +179,29 @@ class CifNetBasicLayer(nn.Module):
     A classic ResNet's residual layer composed by two `3x3` convolutions.
     """
 
-    def __init__(self, in_channels, out_channels, stride, activation):
+    def __init__(
+            self,
+            config: CifNetConfig,
+            in_channels,
+            out_channels
+        ):
         super().__init__()
+        self.config = config
+        stride = 2 if out_channels > in_channels else 1 # up scale channel if downscale resolution 
         should_apply_shortcut = out_channels != in_channels
         self.shortcut = (
             CifNetShortCut(in_channels, out_channels, stride=stride) if should_apply_shortcut else nn.Identity()
         )
         self.layer = nn.Sequential(
-            CifNetConvLayer(in_channels, out_channels, stride=stride),
-            CifNetConvLayer(out_channels, out_channels, activation=None),
+            CifNetConvLayer(in_channels, out_channels, config.main_kernel_size, stride=stride, activation=config.activation),
+            CifNetConvLayer(out_channels, out_channels, config.main_kernel_size, activation=config.activation),
         )
-        self.activation = ACT2FN[activation]
 
     def forward(self, hidden_states):
         residual = hidden_states
         hidden_states = self.layer(hidden_states)
         residual = self.shortcut(residual)
         hidden_states += residual
-        hidden_states = self.activation(hidden_states)
         return hidden_states
 
 
@@ -157,190 +216,30 @@ class CifNetBottleNeckLayer(nn.Module):
 
     def __init__(
         self,
+        config: CifNetConfig,
         in_channels, 
         out_channels,
-        stride,
-        activation,
-        reduction: int = 4,
     ):
         super().__init__()
+        self.config = config
         should_apply_shortcut = in_channels != out_channels
-        reduces_channels = out_channels // reduction
+        stride = 2 if out_channels > in_channels else 1 # up scale channel if downscale resolution 
+        reduces_channels = out_channels // config.bottleneck_kwargs['reduction']
         self.shortcut = (
             CifNetShortCut(in_channels, out_channels, stride=stride) if should_apply_shortcut else nn.Identity()
         )
         self.layer = nn.Sequential(
-            CifNetConvLayer(in_channels, reduces_channels, kernel_size=1, stride=1, activation=activation),
-            CifNetConvLayer(reduces_channels, reduces_channels,),
-            CifNetConvLayer(reduces_channels, out_channels, kernel_size=1, stride=stride, activation=None),
+            CifNetConvLayer(in_channels, reduces_channels, kernel_size=1, stride=1, activation=config.activation),
+            CifNetConvLayer(reduces_channels, reduces_channels, kernel_size=config.main_kernel_size, stride=stride, activation=config.activation),
+            CifNetConvLayer(reduces_channels, out_channels, kernel_size=1, stride=1, activation=config.activation),
         )
-        self.activation = ACT2FN[activation]
 
     def forward(self, hidden_states):
         residual = hidden_states
         hidden_states = self.layer(hidden_states)
         residual = self.shortcut(residual)
         hidden_states += residual
-        hidden_states = self.activation(hidden_states)
         return hidden_states
-
-class LlamaAttention(nn.Module):
-    """Multi-headed attention from 'Attention Is All You Need' paper"""
-
-    def __init__(self, config: LlamaConfig, layer_idx: Optional[int] = None):
-        super().__init__()
-        self.config = config
-        self.layer_idx = layer_idx
-        if layer_idx is None:
-            logger.warning_once(
-                f"Instantiating {self.__class__.__name__} without passing a `layer_idx` is not recommended and will "
-                "lead to errors during the forward call if caching is used. Please make sure to provide a `layer_idx` "
-                "when creating this class."
-            )
-
-        self.attention_dropout = config.attention_dropout
-        self.hidden_size = config.hidden_size
-        self.num_heads = config.num_attention_heads
-        self.head_dim = self.hidden_size // self.num_heads
-        self.num_key_value_heads = config.num_key_value_heads
-        self.num_key_value_groups = self.num_heads // self.num_key_value_heads
-        self.max_position_embeddings = config.max_position_embeddings
-        self.rope_theta = config.rope_theta
-        self.is_causal = True
-
-        if (self.head_dim * self.num_heads) != self.hidden_size:
-            raise ValueError(
-                f"hidden_size must be divisible by num_heads (got `hidden_size`: {self.hidden_size}"
-                f" and `num_heads`: {self.num_heads})."
-            )
-
-        self.q_proj = nn.Linear(self.hidden_size, self.num_heads * self.head_dim, bias=config.attention_bias)
-        self.k_proj = nn.Linear(self.hidden_size, self.num_key_value_heads * self.head_dim, bias=config.attention_bias)
-        self.v_proj = nn.Linear(self.hidden_size, self.num_key_value_heads * self.head_dim, bias=config.attention_bias)
-        self.o_proj = nn.Linear(self.hidden_size, self.hidden_size, bias=config.attention_bias)
-        self._init_rope()
-
-    def _init_rope(self):
-        if self.config.rope_scaling is None:
-            self.rotary_emb = LlamaRotaryEmbedding(
-                self.head_dim,
-                max_position_embeddings=self.max_position_embeddings,
-                base=self.rope_theta,
-            )
-        else:
-            scaling_type = self.config.rope_scaling["type"]
-            scaling_factor = self.config.rope_scaling["factor"]
-            if scaling_type == "linear":
-                self.rotary_emb = LlamaLinearScalingRotaryEmbedding(
-                    self.head_dim,
-                    max_position_embeddings=self.max_position_embeddings,
-                    scaling_factor=scaling_factor,
-                    base=self.rope_theta,
-                )
-            elif scaling_type == "dynamic":
-                self.rotary_emb = LlamaDynamicNTKScalingRotaryEmbedding(
-                    self.head_dim,
-                    max_position_embeddings=self.max_position_embeddings,
-                    scaling_factor=scaling_factor,
-                    base=self.rope_theta,
-                )
-            else:
-                raise ValueError(f"Unknown RoPE scaling type {scaling_type}")
-
-    def forward(
-        self,
-        hidden_states: torch.Tensor,
-        attention_mask: Optional[torch.Tensor] = None,
-        position_ids: Optional[torch.LongTensor] = None,
-        past_key_value: Optional[Cache] = None,
-        output_attentions: bool = False,
-        use_cache: bool = False,
-        cache_position: Optional[torch.LongTensor] = None,
-        **kwargs,
-    ) -> Tuple[torch.Tensor, Optional[torch.Tensor], Optional[Tuple[torch.Tensor]]]:
-        bsz, q_len, _ = hidden_states.size()
-
-        if self.config.pretraining_tp > 1:
-            key_value_slicing = (self.num_key_value_heads * self.head_dim) // self.config.pretraining_tp
-            query_slices = self.q_proj.weight.split(
-                (self.num_heads * self.head_dim) // self.config.pretraining_tp, dim=0
-            )
-            key_slices = self.k_proj.weight.split(key_value_slicing, dim=0)
-            value_slices = self.v_proj.weight.split(key_value_slicing, dim=0)
-
-            query_states = [F.linear(hidden_states, query_slices[i]) for i in range(self.config.pretraining_tp)]
-            query_states = torch.cat(query_states, dim=-1)
-
-            key_states = [F.linear(hidden_states, key_slices[i]) for i in range(self.config.pretraining_tp)]
-            key_states = torch.cat(key_states, dim=-1)
-
-            value_states = [F.linear(hidden_states, value_slices[i]) for i in range(self.config.pretraining_tp)]
-            value_states = torch.cat(value_states, dim=-1)
-
-        else:
-            query_states = self.q_proj(hidden_states)
-            key_states = self.k_proj(hidden_states)
-            value_states = self.v_proj(hidden_states)
-
-        query_states = query_states.view(bsz, q_len, self.num_heads, self.head_dim).transpose(1, 2)
-        key_states = key_states.view(bsz, q_len, self.num_key_value_heads, self.head_dim).transpose(1, 2)
-        value_states = value_states.view(bsz, q_len, self.num_key_value_heads, self.head_dim).transpose(1, 2)
-
-        past_key_value = getattr(self, "past_key_value", past_key_value)
-        cos, sin = self.rotary_emb(value_states, position_ids)
-        query_states, key_states = apply_rotary_pos_emb(query_states, key_states, cos, sin)
-
-        if past_key_value is not None:
-            # sin and cos are specific to RoPE models; cache_position needed for the static cache
-            cache_kwargs = {"sin": sin, "cos": cos, "cache_position": cache_position}
-            key_states, value_states = past_key_value.update(key_states, value_states, self.layer_idx, cache_kwargs)
-
-        key_states = repeat_kv(key_states, self.num_key_value_groups)
-        value_states = repeat_kv(value_states, self.num_key_value_groups)
-
-        attn_weights = torch.matmul(query_states, key_states.transpose(2, 3)) / math.sqrt(self.head_dim)
-
-        if attention_mask is not None:  # no matter the length, we just slice it
-            causal_mask = attention_mask[:, :, :, : key_states.shape[-2]]
-            attn_weights = attn_weights + causal_mask
-
-        # upcast attention to fp32
-        attn_weights = nn.functional.softmax(attn_weights, dim=-1, dtype=torch.float32).to(query_states.dtype)
-        attn_weights = nn.functional.dropout(attn_weights, p=self.attention_dropout, training=self.training)
-        attn_output = torch.matmul(attn_weights, value_states)
-
-        if attn_output.size() != (bsz, self.num_heads, q_len, self.head_dim):
-            raise ValueError(
-                f"`attn_output` should be of size {(bsz, self.num_heads, q_len, self.head_dim)}, but is"
-                f" {attn_output.size()}"
-            )
-
-        attn_output = attn_output.transpose(1, 2).contiguous()
-
-        attn_output = attn_output.reshape(bsz, q_len, self.hidden_size)
-
-        if self.config.pretraining_tp > 1:
-            attn_output = attn_output.split(self.hidden_size // self.config.pretraining_tp, dim=2)
-            o_proj_slices = self.o_proj.weight.split(self.hidden_size // self.config.pretraining_tp, dim=1)
-            attn_output = sum([F.linear(attn_output[i], o_proj_slices[i]) for i in range(self.config.pretraining_tp)])
-        else:
-            attn_output = self.o_proj(attn_output)
-
-        if not output_attentions:
-            attn_weights = None
-
-        return attn_output, attn_weights, past_key_value
-
-
-# class CifNetAttentionLayer(nn.Module):
-#     def __init__(
-#         self,
-#     ):
-#         super().__init__()
-    
-#     def forward(self, hidden_states):
-#         ...
-
 
 class CifNetRMSNorm(nn.Module):
     def __init__(self, hidden_size, eps=1e-6):
@@ -358,56 +257,122 @@ class CifNetRMSNorm(nn.Module):
         hidden_states = hidden_states * torch.rsqrt(variance + self.variance_epsilon)
         return self.weight * hidden_states.to(input_dtype)
 
-class CifNetSelfAttention(nn.Module):
 
+class CifNetSelfAttention(nn.Module):
     def __init__(
         self,
-        channels,
-        attn_channels,
-        num_heads,
-        attention_bias = True,
-        stride = 1,
-        kernel_size = 1,
-        activation = 'relu',
+        config,
+        hidden_size,
     ):
         super().__init__()
-        self.channels = channels
-        self.attn_channels = attn_channels
-        self.num_heads = num_heads
-        self.intermediate_size = num_heads * attn_channels
-        # self.q_proj = nn.Linear(self.hidden_size, self.num_heads * self.head_dim, bias=config.attention_bias)
-        # self.k_proj = nn.Linear(self.hidden_size, self.num_key_value_heads * self.head_dim, bias=config.attention_bias)
-        # self.v_proj = nn.Linear(self.hidden_size, self.num_key_value_heads * self.head_dim, bias=config.attention_bias)
+        self.hidden_size = hidden_size
+        self.attn_channels = config.attention_kwargs['attn_channels']
+        self.num_heads = config.attention_kwargs['num_heads']
+        self.attn_kernel_size = config.attention_kwargs['attn_kernel_size']
+        self.attn_stride = config.attention_kwargs['attn_stride']
+        self.attention_bias = config.attention_kwargs['attention_bias']
+        self.attention_dropout = config.attention_kwargs['attention_dropout']
+        self.max_position_embeddings = config.attention_kwargs['max_position_embeddings']
+        # self.rope_theta = config.attention_kwargs['rope_theta']
+        # self.rope_scaling_type = config.attention_kwargs['rope_scaling_type']
+        # self.rope_scaling_factor = config.attention_kwargs['rope_scaling_factor']
+
+
+        self.intermediate_size = self.num_heads * self.attn_channels
+        # self.q_proj = nn.Linear(self.hidden_size, self.num_heads * self.attn_channels, bias=config.attention_bias)
+        # self.k_proj = nn.Linear(self.hidden_size, self.num_key_value_heads * self.attn_channels, bias=config.attention_bias)
+        # self.v_proj = nn.Linear(self.hidden_size, self.num_key_value_heads * self.attn_channels, bias=config.attention_bias)
         # self.o_proj = nn.Linear(self.hidden_size, self.hidden_size, bias=config.attention_bias)
 
-        self.q_proj = nn.Conv2d(self.hidden_size, self.intermediate_size, kernel_size=kernel_size, stride=stride, padding=kernel_size // 2, bias=attention_bias)
-        self.k_proj = nn.Conv2d(self.hidden_size, self.intermediate_size, kernel_size=kernel_size, stride=stride, padding=kernel_size // 2, bias=attention_bias)
-        self.v_proj = nn.Conv2d(self.hidden_size, self.intermediate_size, kernel_size=kernel_size, stride=stride, padding=kernel_size // 2, bias=attention_bias)
-        self.o_proj = nn.Conv2d(self.hidden_size, self.hidden_size, kernel_size=kernel_size, stride=stride, padding=kernel_size // 2, bias=attention_bias)
-        self.activation = ACT2FN[activation]
-        
-    def forward(self, hidden_states):
+        self.q_proj = nn.Conv2d(self.hidden_size, self.intermediate_size, kernel_size=self.attn_kernel_size, stride=self.attn_stride, padding=self.attn_kernel_size // 2, bias=self.attention_bias)
+        self.k_proj = nn.Conv2d(self.hidden_size, self.intermediate_size, kernel_size=self.attn_kernel_size, stride=self.attn_stride, padding=self.attn_kernel_size // 2, bias=self.attention_bias)
+        self.v_proj = nn.Conv2d(self.hidden_size, self.intermediate_size, kernel_size=self.attn_kernel_size, stride=self.attn_stride, padding=self.attn_kernel_size // 2, bias=self.attention_bias)
+        self.o_proj = nn.Conv2d(self.intermediate_size, self.hidden_size, kernel_size=self.attn_kernel_size, stride=self.attn_stride, padding=self.attn_kernel_size // 2, bias=self.attention_bias)
+
+    def forward(
+            self,
+            hidden_states,
+            output_attentions=False,
+        ):
         # MHSA
         bsz, c, h, w = hidden_states.size()
-
+        q_len = h*w
+        
         query_states = self.q_proj(hidden_states)
         key_states = self.k_proj(hidden_states)
         value_states = self.v_proj(hidden_states)
+        
+        query_states = einops.rearrange(query_states, 'b (num_heads attn_channels) h w -> b num_heads (h w) attn_channels', num_heads=self.num_heads, attn_channels=self.attn_channels)
+        key_states = einops.rearrange(key_states, 'b (num_heads attn_channels) h w -> b num_heads (h w) attn_channels', num_heads=self.num_heads, attn_channels=self.attn_channels)
+        value_states = einops.rearrange(value_states, 'b (num_heads attn_channels) h w -> b num_heads (h w) attn_channels', num_heads=self.num_heads, attn_channels=self.attn_channels)
 
-        query_states = einops.reshape(query_states, 'b (num_heads attn_channels) h w -> b num_heads (h w) head_dim', num_heads=self.num_heads, attn_channels=self.attn_channels)
-        key_states = einops.reshape(key_states, 'b (num_heads attn_channels) h w -> b num_heads (h w) head_dim', num_heads=self.num_heads, attn_channels=self.attn_channels)
-        value_states = einops.reshape(value_states, 'b (num_heads attn_channels) h w -> b num_heads (h w) head_dim', num_heads=self.num_heads, attn_channels=self.attn_channels)
+        # cos, sin = self.rotary_emb(value_states, )
+        # query_states, key_states = apply_rotary_pos_emb(query_states, key_states, cos, sin)
 
-        return hidden_states
+        attn_weights = torch.matmul(query_states, key_states.transpose(2, 3)) / math.sqrt(self.attn_channels)
+        # upcast attention to fp32
+        attn_weights = nn.functional.softmax(attn_weights, dim=-1, dtype=torch.float32).to(query_states.dtype)
+        attn_weights = nn.functional.dropout(attn_weights, p=self.attention_dropout, training=self.training)
+        attn_output = torch.matmul(attn_weights, value_states)
+        if attn_output.size() != (bsz, self.num_heads, q_len, self.attn_channels):
+            raise ValueError(
+                f"`attn_output` should be of size {(bsz, self.num_heads, q_len, self.attn_channels)}, but is"
+                f" {attn_output.size()}"
+            )
+        attn_output = attn_output.contiguous()
 
+        attn_output = einops.rearrange(attn_output, "b num_heads (h w) attn_channels -> b (num_heads attn_channels) h w", h=h, w=w) 
+        # attn_output.reshape(bsz, q_len, self.hidden_size)
+        attn_output = self.o_proj(attn_output)
+
+        if not output_attentions:
+            attn_weights = None
+
+        return attn_output
 
 class CifNetSelfAttentionLayer(nn.Module):
-    def __init__(self):
+    def __init__(
+        self,
+        config,
+        in_channels,
+        out_channels,
+    ):
         super().__init__()
+        self.config = config
+        should_apply_shortcut = in_channels != out_channels
+        stride = 2 if out_channels > in_channels else 1 # up scale channel if downscale resolution 
+        self.shortcut = (
+            CifNetShortCut(in_channels, out_channels, stride=stride) if should_apply_shortcut else nn.Identity()
+        )
+        self.in_conv = CifNetConvLayer(in_channels, out_channels, config.main_kernel_size, stride=stride, activation=config.activation)
 
-    def forward(self):
-        ...
+        self.attention = CifNetSelfAttention(config, out_channels)
+        self.activation = ACT2FN[config.activation]
+        self.attention_norm = CifNetRMSNorm(out_channels)
+
+        self.out_conv = CifNetConvLayer(out_channels, out_channels, config.main_kernel_size, stride=1, activation=config.activation)
         
+    def forward(
+        self,
+        hidden_states,
+    ):
+        residual = hidden_states
+
+        hidden_states = self.in_conv(hidden_states) 
+        
+        
+        hidden_states = self.attention(hidden_states)
+        hidden_states = einops.rearrange(hidden_states, "b c h w -> b h w c") 
+        hidden_states = self.attention_norm(hidden_states)
+        hidden_states = einops.rearrange(hidden_states, "b h w c-> b c h w") 
+        hidden_states = self.activation(hidden_states)
+
+        hidden_states = self.out_conv(hidden_states) 
+
+        residual = self.shortcut(residual)
+        hidden_states += residual
+        return hidden_states
+
 class CifNetStage(nn.Module):
     """
     A ResNet stage composed by stacked layers.
@@ -416,6 +381,8 @@ class CifNetStage(nn.Module):
     def __init__(
         self,
         config: CifNetConfig,
+        in_channels,
+        out_channels,
         depth,
     ):
         super().__init__()
@@ -429,10 +396,9 @@ class CifNetStage(nn.Module):
             case _:
                 raise ValueError(f"Not Valid config.layer_type {config.layer_type}")
 
-        if config.layer_type == "bottleneck":
-            first_layer = layer(config=config)
+        first_layer = layer(config, in_channels, out_channels)
         self.layers = nn.Sequential(
-            first_layer, *[layer(config=config) for _ in range(depth - 1)]
+            first_layer, *[layer(config, in_channels, out_channels) for _ in range(depth - 1)]
         )
 
     def forward(self, input: Tensor) -> Tensor:
@@ -450,32 +416,32 @@ class CifNetEncoder(nn.Module):
         self.stages.append(
             CifNetStage(
                 config,
-                depth=config.depths[0],
+                config.embedding_kwargs['embedding_size'],
+                config.hidden_sizes[0],
+                1,
             )
         )
-        for depth in config.depths[1:]:
-            self.stages.append(CifNetStage(config, depth=depth,))
+        in_out_channels = zip(config.hidden_sizes, config.hidden_sizes[1:])
+        for (in_channels, out_channels), depth in zip(in_out_channels, config.depths[1:]):
+            self.stages.append(CifNetStage(config, in_channels, out_channels, depth,))
 
     def forward(
         self, hidden_states: Tensor, output_hidden_states: bool = False, return_dict: bool = True
     ) -> BaseModelOutputWithNoAttention:
-        hidden_states = () if output_hidden_states else None
-
+        all_hidden_states = () if output_hidden_states else None
         for stage_module in self.stages:
             if output_hidden_states:
-                hidden_states = hidden_states + (hidden_states,)
-
+                all_hidden_states = all_hidden_states + (hidden_states,)
             hidden_states = stage_module(hidden_states)
-
         if output_hidden_states:
-            hidden_states = hidden_states + (hidden_states,)
+            all_hidden_states = all_hidden_states + (hidden_states,)
 
         if not return_dict:
-            return tuple(v for v in [hidden_states, hidden_states] if v is not None)
+            return tuple(v for v in [hidden_states, all_hidden_states] if v is not None)
 
         return BaseModelOutputWithNoAttention(
             last_hidden_state=hidden_states,
-            hidden_states=hidden_states,
+            hidden_states=all_hidden_states,
         )
 
 
