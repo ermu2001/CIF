@@ -1,0 +1,8 @@
+einops
+evaluate
+transformers
+datasets
+accelerate
+torch
+torchvision
+torchaudio
