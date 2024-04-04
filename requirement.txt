@@ -1,8 +1,10 @@
+timm
 einops
 evaluate
 transformers
 datasets
 accelerate
+scikit-learn
 torch
 torchvision
 torchaudio
