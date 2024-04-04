@@ -12,15 +12,16 @@ label_column_name="label"
 # model_name_or_path=MODELS/cifnet-18-tiny_bottleneck
 
 accel_config="scripts/accel_config_singlegpu.yaml --gpu_ids 1"
-output_dir="OUTPUTS/cifnet-18-tiny-lr0.01-attention"
-model_name_or_path=MODELS/cifnet-18-tiny_attention
+model_name=cifnet-18-tiny_attention
+exp_name=prenorm
+model_name_or_path=MODELS/${model_name}
 
 # model_name_or_path=MODELS/cifnet-18
 # model_name_or_path=MODELS/cifnet-18-tiny
 # model_name_or_path=MODELS/cifnet-18-tiny_attention
 # model_name_or_path=MODELS/cifnet-55-cifar
 num_workers=32
-learning_rate=0.01
+learning_rate=0.001
 lr_scheduler_type="cosine"
 gradient_accumulation_steps=1
 per_device_train_batch_size=128
@@ -29,6 +30,17 @@ max_train_steps=64000
 num_warmup_steps=6400
 # # debug
 # max_train_samples=10000
+output_dir="OUTPUTS/${model_name}--lr${learning_rate}--${exp_name}"
+
+
+
+
+mkdir -p ${output_dir}
+echo "TESTING MODEL"
+PYTHONPATH=. \
+python -m tasks.construct_model \
+    --model_name_or_path ${model_name_or_path} > ${output_dir}/test_model.log
+
 
 PYTHONPATH=. \
 accelerate launch --config_file ${accel_config} tasks/train.py \

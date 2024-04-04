@@ -359,12 +359,12 @@ class CifNetSelfAttentionLayer(nn.Module):
         residual = hidden_states
 
         hidden_states = self.in_conv(hidden_states) 
-        
-        
-        hidden_states = self.attention(hidden_states)
+        # pre norm        
         hidden_states = einops.rearrange(hidden_states, "b c h w -> b h w c") 
         hidden_states = self.attention_norm(hidden_states)
         hidden_states = einops.rearrange(hidden_states, "b h w c-> b c h w") 
+        
+        hidden_states = self.attention(hidden_states)
         hidden_states = self.activation(hidden_states)
 
         hidden_states = self.out_conv(hidden_states) 
@@ -398,7 +398,7 @@ class CifNetStage(nn.Module):
 
         first_layer = layer(config, in_channels, out_channels)
         self.layers = nn.Sequential(
-            first_layer, *[layer(config, in_channels, out_channels) for _ in range(depth - 1)]
+            first_layer, *[layer(config, out_channels, out_channels) for _ in range(depth - 1)]
         )
 
     def forward(self, input: Tensor) -> Tensor:

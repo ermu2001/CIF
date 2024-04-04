@@ -1,4 +1,5 @@
 
+import argparse
 import os
 from tasks.utils import setup_model
 import torch
@@ -6,6 +7,18 @@ import torch.nn as nn
 
 from collections import OrderedDict
 import numpy as np
+
+
+def parse_args():
+    parser = argparse.ArgumentParser()
+    parser.add_argument(
+        "--model_name_or_path",
+        type=str,
+        required=True
+    )
+    args = parser.parse_args()
+    return args
+
 
 def summary(model, input_size, batch_size=-1, device="cuda"):
     def register_hook(module):
@@ -119,10 +132,13 @@ def summary(model, input_size, batch_size=-1, device="cuda"):
 if __name__ == "__main__":
     # model, processor = setup_model('microsoft/resnet-18')
     # model, processor = setup_model('MODELS/cifnet-18')
-    model, processor = setup_model('MODELS/cifnet-18-tiny_bottleneck')
+    # model, processor = setup_model('MODELS/cifnet-18-tiny_bottleneck')
     # model, processor = setup_model('MODELS/cifnet-18-tiny_attention')
     # model, processor = setup_model('MODELS/cifnet-18-tiny')
     # model, processor = setup_model('MODELS/cifnet-55-cifar')
+    args = parse_args()
+    model, processor = setup_model(args.model_name_or_path)
+    
     model = model.to('cuda')
     print(model)
     summary(model, (3, 224, 224), batch_size=4)
