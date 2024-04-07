@@ -12,14 +12,11 @@ label_column_name="label"
 # model_name_or_path=MODELS/cifnet-18-tiny_bottleneck
 
 accel_config="scripts/accel_config_singlegpu.yaml --gpu_ids 1"
-model_name=cifnet-18-tiny
 output_dir="OUTPUTS/${model_name}"
+
+model_name=${1}
 model_name_or_path=MODELS/${model_name}
 
-# model_name_or_path=MODELS/cifnet-18
-# model_name_or_path=MODELS/cifnet-18-tiny
-# model_name_or_path=MODELS/cifnet-18-tiny_attention
-# model_name_or_path=MODELS/cifnet-55-cifar
 num_workers=32
 learning_rate=0.01
 lr_scheduler_type="cosine"
@@ -30,9 +27,6 @@ max_train_steps=64000
 num_warmup_steps=6400
 # # debug
 # max_train_samples=10000
-
-model_name=cifnet-18-tiny
-model_name_or_path=MODELS/${model_name}
 
 PYTHONPATH=. \
 python -m tasks.construct_model \

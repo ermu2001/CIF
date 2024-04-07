@@ -18,10 +18,14 @@ import json
 import logging
 import math
 import os
+import os.path as osp
 from pathlib import Path
 
 import datasets
 import evaluate
+import numpy as np
+import PIL.Image
+import pandas as pd
 import torch
 from accelerate import Accelerator
 from accelerate.logging import get_logger
@@ -29,6 +33,7 @@ from accelerate.utils import set_seed
 from datasets import load_dataset
 from huggingface_hub import HfApi
 from torch.utils.data import DataLoader
+from torch.utils.data import Dataset
 from torchvision.transforms import (
     CenterCrop,
     Compose,
@@ -224,6 +229,75 @@ def parse_args():
 
     return args
 
+# testing
+def unpickle(file):
+    import pickle
+    with open(file, 'rb') as fo:
+        dict = pickle.load(fo, encoding='bytes')
+    return dict
+
+class EvalDataset(Dataset):
+    def __init__(self, samples, transform):
+        self.samples = samples
+        self.trasnform = transform
+
+    def __getitem__(self, index):
+        sample = self.samples[index]
+        sample = sample.reshape((3, 32, 32)).transpose(1, 2, 0)
+        sample = PIL.Image.fromarray(sample)
+        # sample.save('test.jpg')
+        sample = self.trasnform(sample)
+        return{
+            "pixel_values": sample,
+            "index": torch.Tensor([index]),
+        }
+    
+    def __len__(self):
+        return len(self.samples)
+
+# preprocessed_test_data = preprocessed_test_data.to('cuda')
+def eval_test(accelerator: Accelerator, model, test_dataloader, epoch, output_dir):
+    ID_list = []
+    label_list = []
+    for batch in test_dataloader:
+        pixel_values = batch['pixel_values'].to(model.device)
+        indexs = batch['indexs'].flatten().int().tolist()
+        outputs = model(pixel_values)
+        logits = outputs.logits
+        labels = torch.argmax(logits, dim=-1).flatten().int().tolist()
+        # print(indexs)
+        # print(pixel_values)
+        # print(labels)
+        # print(indexs)
+        ID_list.extend(indexs)
+        label_list.extend(labels)
+        
+    true_labels = np.array([8, 2, 9, 0, 4, 3, 6, 1, 7, 5]).repeat(1000)
+    ID_list = accelerator.gather_for_metrics(ID_list)
+    label_list = accelerator.gather_for_metrics(label_list)
+    ID_list = np.array(ID_list)
+    label_list = np.array(label_list)
+    
+    # sort by ID_list
+    s = np.argsort(ID_list)
+    ID_list = ID_list[s]
+    label_list = label_list[s]
+
+    acc = np.mean(true_labels == label_list)
+    ID_list = ID_list.tolist()
+    label_list = label_list.tolist()
+
+    # Create a DataFrame with the predictions
+    if accelerator.is_main_process:
+        df = pd.DataFrame({
+            'ID': ID_list,
+            'Labels': label_list
+        })
+        save_dir = osp.join(output_dir, 'predictions')
+        os.makedirs(save_dir, exist_ok=True)
+        df.to_csv(osp.join(save_dir, f'predictions_epoch{epoch}.csv'), index=False)
+    return acc
+
 
 def main():
     args = parse_args()
@@ -346,18 +420,20 @@ def main():
     )
     train_transforms = Compose(
         [
-            RandomResizedCrop(size),
-            RandomHorizontalFlip(),
+
             ToTensor(),
             normalize,
+            # TODO: add more augmentation, could add a masking
+            RandomHorizontalFlip(),
+            RandomResizedCrop(size),
         ]
     )
     val_transforms = Compose(
         [
-            Resize(size),
-            CenterCrop(size),
             ToTensor(),
             normalize,
+            Resize(size),
+            CenterCrop(size),
         ]
     )
 
@@ -384,6 +460,21 @@ def main():
             dataset["validation"] = dataset["validation"].shuffle(seed=args.seed).select(range(args.max_eval_samples))
         # Set the validation transforms
         eval_dataset = dataset["validation"].with_transform(preprocess_val)
+
+
+    cifar_test_nolabels = unpickle('DATAS/cifar_test_nolabels.pkl')
+    test_dataset = EvalDataset(cifar_test_nolabels[b'data'], val_transforms)
+    def collate_fn_test(examples):
+        pixel_values = torch.stack([example["pixel_values"] for example in examples])
+        indexs = torch.stack([example["index"] for example in examples])
+        # labels = torch.tensor([example[label_column_name] for example in examples])
+        # return {"pixel_values": pixel_values, "labels": labels}
+        return {
+            "pixel_values": pixel_values,
+            "indexs": indexs
+        }
+    test_dataloader = DataLoader(test_dataset, batch_size=args.per_device_eval_batch_size, num_workers=args.num_workers, collate_fn=collate_fn_test, shuffle=False)
+
 
     # DataLoaders creation:
     def collate_fn(examples):
@@ -428,8 +519,8 @@ def main():
     )
 
     # Prepare everything with our `accelerator`.
-    model, optimizer, train_dataloader, eval_dataloader, lr_scheduler = accelerator.prepare(
-        model, optimizer, train_dataloader, eval_dataloader, lr_scheduler
+    model, optimizer, train_dataloader, eval_dataloader, test_dataloader, lr_scheduler = accelerator.prepare(
+        model, optimizer, train_dataloader, eval_dataloader, test_dataloader, lr_scheduler
     )
 
     # We need to recalculate our total training steps as the size of the training dataloader may have changed.
@@ -563,6 +654,9 @@ def main():
                 break
 
         model.eval()
+
+        test_acc = eval_test(accelerator, model, test_dataloader, epoch, args.output_dir)
+        
         for step, batch in enumerate(eval_dataloader):
             with torch.no_grad():
                 outputs = model(**batch)
@@ -574,18 +668,23 @@ def main():
             )
 
         eval_metric = metric.compute()
-        logger.info(f"epoch {epoch}: {eval_metric}")
+        logger.info(f"epoch {epoch}: validation info {eval_metric}")
+        logger.info(f"epoch {epoch}: test acc {test_acc}")
 
         if args.with_tracking:
             accelerator.log(
                 {
                     "accuracy": eval_metric,
+                    "test_acc" : test_acc,
                     "train_loss": total_loss.item() / len(train_dataloader),
                     "epoch": epoch,
                     "step": completed_steps,
                 },
                 step=completed_steps,
             )
+
+        
+
 
         if args.push_to_hub and epoch < args.num_train_epochs - 1:
             accelerator.wait_for_everyone()

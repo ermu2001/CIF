@@ -11,20 +11,18 @@ label_column_name="label"
 # output_dir="OUTPUTS/cifnet-18-tiny-lr0.01-bottleneck"
 # model_name_or_path=MODELS/cifnet-18-tiny_bottleneck
 
-accel_config="scripts/accel_config_singlegpu.yaml --gpu_ids 1"
-model_name=cifnet-18-tiny_attention
-exp_name=prenorm
+model_name=cifnet-18-tiny_basic
+exp_name=default
 model_name_or_path=MODELS/${model_name}
 
-# model_name_or_path=MODELS/cifnet-18
-# model_name_or_path=MODELS/cifnet-18-tiny
-# model_name_or_path=MODELS/cifnet-18-tiny_attention
-# model_name_or_path=MODELS/cifnet-55-cifar
 num_workers=32
 learning_rate=0.001
 lr_scheduler_type="cosine"
 gradient_accumulation_steps=1
-per_device_train_batch_size=128
+accel_config="scripts/accel_config_multiplegpu.yaml --gpu_ids 0,1"
+# per_device_train_batch_size=128
+per_device_train_batch_size=64 # ensure global batch size is 128
+
 # num_train_epochs=10
 max_train_steps=64000
 num_warmup_steps=6400
