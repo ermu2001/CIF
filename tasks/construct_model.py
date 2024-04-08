@@ -137,11 +137,14 @@ if __name__ == "__main__":
     # model, processor = setup_model('MODELS/cifnet-18-tiny')
     # model, processor = setup_model('MODELS/cifnet-55-cifar')
     args = parse_args()
-    model, processor = setup_model(args.model_name_or_path)
-    
+    model, image_processor = setup_model(args.model_name_or_path)
+    if "shortest_edge" in image_processor.size:
+        size = (image_processor.size["shortest_edge"], image_processor.size["shortest_edge"],)
+    else:
+        size = (image_processor.size["height"], image_processor.size["width"])
     model = model.to('cuda')
     print(model)
-    summary(model, (3, 224, 224), batch_size=4)
+    summary(model, (3, *size), batch_size=4)
 
     # SAVE_DIR = 'MODELS/resnet-18'
     # os.makedirs(SAVE_DIR, exist_ok=True)

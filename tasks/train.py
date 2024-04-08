@@ -261,6 +261,7 @@ class EvalDataset(Dataset):
         return len(self.samples)
 
 # preprocessed_test_data = preprocessed_test_data.to('cuda')
+@torch.no_grad()
 def eval_test(accelerator: Accelerator, model, test_dataloader, epoch, output_dir):
     ID_list = []
     label_list = []
@@ -430,7 +431,7 @@ def main():
             normalize,
             # TODO: add more augmentation, could add a masking
             RandomHorizontalFlip(),
-            RandomResizedCrop(size),
+            RandomResizedCrop(size, antialias=True),
             # RandomVerticalFlip(),
             # RandomAffine(degrees=(30, 70), translate=(0.1, 0.3), scale=(0.5, 0.75)),
             RandomPerspective(distortion_scale=0.4, p=0.2), # useful
@@ -440,7 +441,7 @@ def main():
         [
             ToTensor(),
             normalize,
-            Resize(size),
+            Resize(size, antialias=True),
             CenterCrop(size),
         ]
     )
