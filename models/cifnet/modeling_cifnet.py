@@ -418,7 +418,7 @@ class CifNetEncoder(nn.Module):
                 config,
                 config.embedding_kwargs['embedding_size'],
                 config.hidden_sizes[0],
-                1,
+                config.depths[0],
             )
         )
         in_out_channels = zip(config.hidden_sizes, config.hidden_sizes[1:])

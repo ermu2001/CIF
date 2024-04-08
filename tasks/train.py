@@ -43,6 +43,11 @@ from torchvision.transforms import (
     RandomResizedCrop,
     Resize,
     ToTensor,
+    ColorJitter,
+    RandomVerticalFlip,
+    RandomPerspective,
+    RandomRotation,
+    RandomAffine,
 )
 from tqdm.auto import tqdm
 
@@ -420,12 +425,15 @@ def main():
     )
     train_transforms = Compose(
         [
-
+            ColorJitter(0.1, 0.1, 0.1, 0.1), # useful
             ToTensor(),
             normalize,
             # TODO: add more augmentation, could add a masking
             RandomHorizontalFlip(),
             RandomResizedCrop(size),
+            # RandomVerticalFlip(),
+            # RandomAffine(degrees=(30, 70), translate=(0.1, 0.3), scale=(0.5, 0.75)),
+            RandomPerspective(distortion_scale=0.4, p=0.2), # useful
         ]
     )
     val_transforms = Compose(
