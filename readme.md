@@ -9,8 +9,10 @@ git clone https://github.com/ermu2001/CIF.git
 cd CIF
 ```
 
-Regularly install torch, transformers (and accelerate for training).
-
+Regularly install torch (2.2 would run by 2024/04/12), transformers (and accelerate for training). You can run this command to install the huggingface modules, but should follow instruction on torch website to install torch.
+```
+pip install -r requirements.txt
+```
 
 ## Downloading Model Weights
 To download the pre-trained weights for the CIFNET models along with our training logs, run the following command:
