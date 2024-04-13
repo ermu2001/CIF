@@ -9,8 +9,11 @@ git clone https://github.com/ermu2001/CIF.git
 cd CIF
 ```
 
+Regularly install torch, transformers (and accelerate for training).
+
+
 ## Downloading Model Weights
-To download the pre-trained weights for the CIFNET models, run the following command:
+To download the pre-trained weights for the CIFNET models along with our training logs, run the following command:
 ```bash
 python3 python_scripts/hf.py
 ```
@@ -41,11 +44,13 @@ To monitor the training process using Tensorboard, execute the following command
 tensorboard --logdir ./OUTPUTS
 ```
 
+The files in our huggingface repo also contains every tensorboard training log of our trained models.
+
 ## Model Details
 The CIFNET models implemented in this repository are designed to balance the depth and complexity of the network to ensure high accuracy without excessive computational cost. Here are some highlights:
 
 CIFNET-22 (OUTPUTS/cifnet-18-cucumber--lr0.001--d4_256) and CIFNET-24 (OUTPUTS/cifnet-18-durian--lr0.001--d4_256): Basic ResNet architectures with moderate depth.
-CIFNET-98 (): Includes deeper layers and employs data augmentation techniques to achieve the highest performance.
+CIFNET-98 (OUTPUTS/best_0409_2--lr0.001--BetterAug): Includes deeper layers and employs data augmentation techniques to achieve the highest performance.
 For detailed model architectures and training processes, please refer to the models directory and the training scripts.
 
 ## Acknowledgements
