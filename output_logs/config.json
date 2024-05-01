@@ -1,0 +1,59 @@
+{
+  "_name_or_path": "microsoft/resnet-18",
+  "activation": "silu",
+  "architectures": [
+    "CifNetForImageClassification"
+  ],
+  "bottleneck_kwargs": {},
+  "depths": [
+    8,
+    12,
+    16,
+    12
+  ],
+  "embedding_kwargs": {
+    "__comment": "First hidden layer size",
+    "embedding_kernel_size_1": 7,
+    "embedding_kernel_size_2": 2,
+    "embedding_size": 16,
+    "embedding_stride_1": 2,
+    "embedding_stride_2": 2
+  },
+  "hidden_sizes": [
+    16,
+    32,
+    64,
+    128
+  ],
+  "id2label": {
+    "0": "airplane",
+    "1": "automobile",
+    "2": "bird",
+    "3": "cat",
+    "4": "deer",
+    "5": "dog",
+    "6": "frog",
+    "7": "horse",
+    "8": "ship",
+    "9": "truck"
+  },
+  "label2id": {
+    "airplane": "0",
+    "automobile": "1",
+    "bird": "2",
+    "cat": "3",
+    "deer": "4",
+    "dog": "5",
+    "frog": "6",
+    "horse": "7",
+    "ship": "8",
+    "truck": "9"
+  },
+  "layer_type": "basic",
+  "main_kernel_size": 3,
+  "model_type": "resnet",
+  "num_channels": 3,
+  "problem_type": "single_label_classification",
+  "torch_dtype": "float32",
+  "transformers_version": "4.39.2"
+}

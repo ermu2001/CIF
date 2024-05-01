@@ -1,0 +1,1280 @@
+CifNetForImageClassification(
+  (resnet): CifNetModel(
+    (embedder): CifNetEmbeddings(
+      (embedder): CifNetConvLayer(
+        (convolution): Conv2d(3, 16, kernel_size=(7, 7), stride=(2, 2), padding=(3, 3), bias=False)
+        (normalization): BatchNorm2d(16, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (activation): SiLU()
+      )
+      (pooler): MaxPool2d(kernel_size=2, stride=2, padding=0, dilation=1, ceil_mode=False)
+    )
+    (encoder): CifNetEncoder(
+      (stages): ModuleList(
+        (0): CifNetStage(
+          (layers): Sequential(
+            (0): CifNetBasicLayer(
+              (shortcut): Identity()
+              (layer): Sequential(
+                (0): CifNetConvLayer(
+                  (convolution): Conv2d(16, 16, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+                  (normalization): BatchNorm2d(16, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+                  (activation): SiLU()
+                )
+                (1): CifNetConvLayer(
+                  (convolution): Conv2d(16, 16, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+                  (normalization): BatchNorm2d(16, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+                  (activation): SiLU()
+                )
+              )
+            )
+            (1): CifNetBasicLayer(
+              (shortcut): Identity()
+              (layer): Sequential(
+                (0): CifNetConvLayer(
+                  (convolution): Conv2d(16, 16, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+                  (normalization): BatchNorm2d(16, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+                  (activation): SiLU()
+                )
+                (1): CifNetConvLayer(
+                  (convolution): Conv2d(16, 16, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+                  (normalization): BatchNorm2d(16, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+                  (activation): SiLU()
+                )
+              )
+            )
+            (2): CifNetBasicLayer(
+              (shortcut): Identity()
+              (layer): Sequential(
+                (0): CifNetConvLayer(
+                  (convolution): Conv2d(16, 16, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+                  (normalization): BatchNorm2d(16, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+                  (activation): SiLU()
+                )
+                (1): CifNetConvLayer(
+                  (convolution): Conv2d(16, 16, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+                  (normalization): BatchNorm2d(16, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+                  (activation): SiLU()
+                )
+              )
+            )
+            (3): CifNetBasicLayer(
+              (shortcut): Identity()
+              (layer): Sequential(
+                (0): CifNetConvLayer(
+                  (convolution): Conv2d(16, 16, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+                  (normalization): BatchNorm2d(16, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+                  (activation): SiLU()
+                )
+                (1): CifNetConvLayer(
+                  (convolution): Conv2d(16, 16, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+                  (normalization): BatchNorm2d(16, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+                  (activation): SiLU()
+                )
+              )
+            )
+            (4): CifNetBasicLayer(
+              (shortcut): Identity()
+              (layer): Sequential(
+                (0): CifNetConvLayer(
+                  (convolution): Conv2d(16, 16, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+                  (normalization): BatchNorm2d(16, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+                  (activation): SiLU()
+                )
+                (1): CifNetConvLayer(
+                  (convolution): Conv2d(16, 16, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+                  (normalization): BatchNorm2d(16, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+                  (activation): SiLU()
+                )
+              )
+            )
+            (5): CifNetBasicLayer(
+              (shortcut): Identity()
+              (layer): Sequential(
+                (0): CifNetConvLayer(
+                  (convolution): Conv2d(16, 16, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+                  (normalization): BatchNorm2d(16, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+                  (activation): SiLU()
+                )
+                (1): CifNetConvLayer(
+                  (convolution): Conv2d(16, 16, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+                  (normalization): BatchNorm2d(16, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+                  (activation): SiLU()
+                )
+              )
+            )
+            (6): CifNetBasicLayer(
+              (shortcut): Identity()
+              (layer): Sequential(
+                (0): CifNetConvLayer(
+                  (convolution): Conv2d(16, 16, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+                  (normalization): BatchNorm2d(16, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+                  (activation): SiLU()
+                )
+                (1): CifNetConvLayer(
+                  (convolution): Conv2d(16, 16, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+                  (normalization): BatchNorm2d(16, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+                  (activation): SiLU()
+                )
+              )
+            )
+            (7): CifNetBasicLayer(
+              (shortcut): Identity()
+              (layer): Sequential(
+                (0): CifNetConvLayer(
+                  (convolution): Conv2d(16, 16, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+                  (normalization): BatchNorm2d(16, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+                  (activation): SiLU()
+                )
+                (1): CifNetConvLayer(
+                  (convolution): Conv2d(16, 16, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+                  (normalization): BatchNorm2d(16, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+                  (activation): SiLU()
+                )
+              )
+            )
+          )
+        )
+        (1): CifNetStage(
+          (layers): Sequential(
+            (0): CifNetBasicLayer(
+              (shortcut): CifNetShortCut(
+                (convolution): Conv2d(16, 32, kernel_size=(1, 1), stride=(2, 2), bias=False)
+                (normalization): BatchNorm2d(32, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+              )
+              (layer): Sequential(
+                (0): CifNetConvLayer(
+                  (convolution): Conv2d(16, 32, kernel_size=(3, 3), stride=(2, 2), padding=(1, 1), bias=False)
+                  (normalization): BatchNorm2d(32, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+                  (activation): SiLU()
+                )
+                (1): CifNetConvLayer(
+                  (convolution): Conv2d(32, 32, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+                  (normalization): BatchNorm2d(32, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+                  (activation): SiLU()
+                )
+              )
+            )
+            (1): CifNetBasicLayer(
+              (shortcut): Identity()
+              (layer): Sequential(
+                (0): CifNetConvLayer(
+                  (convolution): Conv2d(32, 32, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+                  (normalization): BatchNorm2d(32, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+                  (activation): SiLU()
+                )
+                (1): CifNetConvLayer(
+                  (convolution): Conv2d(32, 32, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+                  (normalization): BatchNorm2d(32, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+                  (activation): SiLU()
+                )
+              )
+            )
+            (2): CifNetBasicLayer(
+              (shortcut): Identity()
+              (layer): Sequential(
+                (0): CifNetConvLayer(
+                  (convolution): Conv2d(32, 32, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+                  (normalization): BatchNorm2d(32, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+                  (activation): SiLU()
+                )
+                (1): CifNetConvLayer(
+                  (convolution): Conv2d(32, 32, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+                  (normalization): BatchNorm2d(32, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+                  (activation): SiLU()
+                )
+              )
+            )
+            (3): CifNetBasicLayer(
+              (shortcut): Identity()
+              (layer): Sequential(
+                (0): CifNetConvLayer(
+                  (convolution): Conv2d(32, 32, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+                  (normalization): BatchNorm2d(32, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+                  (activation): SiLU()
+                )
+                (1): CifNetConvLayer(
+                  (convolution): Conv2d(32, 32, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+                  (normalization): BatchNorm2d(32, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+                  (activation): SiLU()
+                )
+              )
+            )
+            (4): CifNetBasicLayer(
+              (shortcut): Identity()
+              (layer): Sequential(
+                (0): CifNetConvLayer(
+                  (convolution): Conv2d(32, 32, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+                  (normalization): BatchNorm2d(32, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+                  (activation): SiLU()
+                )
+                (1): CifNetConvLayer(
+                  (convolution): Conv2d(32, 32, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+                  (normalization): BatchNorm2d(32, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+                  (activation): SiLU()
+                )
+              )
+            )
+            (5): CifNetBasicLayer(
+              (shortcut): Identity()
+              (layer): Sequential(
+                (0): CifNetConvLayer(
+                  (convolution): Conv2d(32, 32, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+                  (normalization): BatchNorm2d(32, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+                  (activation): SiLU()
+                )
+                (1): CifNetConvLayer(
+                  (convolution): Conv2d(32, 32, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+                  (normalization): BatchNorm2d(32, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+                  (activation): SiLU()
+                )
+              )
+            )
+            (6): CifNetBasicLayer(
+              (shortcut): Identity()
+              (layer): Sequential(
+                (0): CifNetConvLayer(
+                  (convolution): Conv2d(32, 32, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+                  (normalization): BatchNorm2d(32, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+                  (activation): SiLU()
+                )
+                (1): CifNetConvLayer(
+                  (convolution): Conv2d(32, 32, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+                  (normalization): BatchNorm2d(32, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+                  (activation): SiLU()
+                )
+              )
+            )
+            (7): CifNetBasicLayer(
+              (shortcut): Identity()
+              (layer): Sequential(
+                (0): CifNetConvLayer(
+                  (convolution): Conv2d(32, 32, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+                  (normalization): BatchNorm2d(32, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+                  (activation): SiLU()
+                )
+                (1): CifNetConvLayer(
+                  (convolution): Conv2d(32, 32, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+                  (normalization): BatchNorm2d(32, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+                  (activation): SiLU()
+                )
+              )
+            )
+            (8): CifNetBasicLayer(
+              (shortcut): Identity()
+              (layer): Sequential(
+                (0): CifNetConvLayer(
+                  (convolution): Conv2d(32, 32, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+                  (normalization): BatchNorm2d(32, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+                  (activation): SiLU()
+                )
+                (1): CifNetConvLayer(
+                  (convolution): Conv2d(32, 32, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+                  (normalization): BatchNorm2d(32, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+                  (activation): SiLU()
+                )
+              )
+            )
+            (9): CifNetBasicLayer(
+              (shortcut): Identity()
+              (layer): Sequential(
+                (0): CifNetConvLayer(
+                  (convolution): Conv2d(32, 32, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+                  (normalization): BatchNorm2d(32, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+                  (activation): SiLU()
+                )
+                (1): CifNetConvLayer(
+                  (convolution): Conv2d(32, 32, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+                  (normalization): BatchNorm2d(32, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+                  (activation): SiLU()
+                )
+              )
+            )
+            (10): CifNetBasicLayer(
+              (shortcut): Identity()
+              (layer): Sequential(
+                (0): CifNetConvLayer(
+                  (convolution): Conv2d(32, 32, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+                  (normalization): BatchNorm2d(32, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+                  (activation): SiLU()
+                )
+                (1): CifNetConvLayer(
+                  (convolution): Conv2d(32, 32, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+                  (normalization): BatchNorm2d(32, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+                  (activation): SiLU()
+                )
+              )
+            )
+            (11): CifNetBasicLayer(
+              (shortcut): Identity()
+              (layer): Sequential(
+                (0): CifNetConvLayer(
+                  (convolution): Conv2d(32, 32, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+                  (normalization): BatchNorm2d(32, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+                  (activation): SiLU()
+                )
+                (1): CifNetConvLayer(
+                  (convolution): Conv2d(32, 32, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+                  (normalization): BatchNorm2d(32, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+                  (activation): SiLU()
+                )
+              )
+            )
+          )
+        )
+        (2): CifNetStage(
+          (layers): Sequential(
+            (0): CifNetBasicLayer(
+              (shortcut): CifNetShortCut(
+                (convolution): Conv2d(32, 64, kernel_size=(1, 1), stride=(2, 2), bias=False)
+                (normalization): BatchNorm2d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+              )
+              (layer): Sequential(
+                (0): CifNetConvLayer(
+                  (convolution): Conv2d(32, 64, kernel_size=(3, 3), stride=(2, 2), padding=(1, 1), bias=False)
+                  (normalization): BatchNorm2d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+                  (activation): SiLU()
+                )
+                (1): CifNetConvLayer(
+                  (convolution): Conv2d(64, 64, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+                  (normalization): BatchNorm2d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+                  (activation): SiLU()
+                )
+              )
+            )
+            (1): CifNetBasicLayer(
+              (shortcut): Identity()
+              (layer): Sequential(
+                (0): CifNetConvLayer(
+                  (convolution): Conv2d(64, 64, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+                  (normalization): BatchNorm2d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+                  (activation): SiLU()
+                )
+                (1): CifNetConvLayer(
+                  (convolution): Conv2d(64, 64, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+                  (normalization): BatchNorm2d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+                  (activation): SiLU()
+                )
+              )
+            )
+            (2): CifNetBasicLayer(
+              (shortcut): Identity()
+              (layer): Sequential(
+                (0): CifNetConvLayer(
+                  (convolution): Conv2d(64, 64, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+                  (normalization): BatchNorm2d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+                  (activation): SiLU()
+                )
+                (1): CifNetConvLayer(
+                  (convolution): Conv2d(64, 64, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+                  (normalization): BatchNorm2d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+                  (activation): SiLU()
+                )
+              )
+            )
+            (3): CifNetBasicLayer(
+              (shortcut): Identity()
+              (layer): Sequential(
+                (0): CifNetConvLayer(
+                  (convolution): Conv2d(64, 64, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+                  (normalization): BatchNorm2d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+                  (activation): SiLU()
+                )
+                (1): CifNetConvLayer(
+                  (convolution): Conv2d(64, 64, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+                  (normalization): BatchNorm2d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+                  (activation): SiLU()
+                )
+              )
+            )
+            (4): CifNetBasicLayer(
+              (shortcut): Identity()
+              (layer): Sequential(
+                (0): CifNetConvLayer(
+                  (convolution): Conv2d(64, 64, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+                  (normalization): BatchNorm2d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+                  (activation): SiLU()
+                )
+                (1): CifNetConvLayer(
+                  (convolution): Conv2d(64, 64, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+                  (normalization): BatchNorm2d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+                  (activation): SiLU()
+                )
+              )
+            )
+            (5): CifNetBasicLayer(
+              (shortcut): Identity()
+              (layer): Sequential(
+                (0): CifNetConvLayer(
+                  (convolution): Conv2d(64, 64, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+                  (normalization): BatchNorm2d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+                  (activation): SiLU()
+                )
+                (1): CifNetConvLayer(
+                  (convolution): Conv2d(64, 64, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+                  (normalization): BatchNorm2d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+                  (activation): SiLU()
+                )
+              )
+            )
+            (6): CifNetBasicLayer(
+              (shortcut): Identity()
+              (layer): Sequential(
+                (0): CifNetConvLayer(
+                  (convolution): Conv2d(64, 64, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+                  (normalization): BatchNorm2d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+                  (activation): SiLU()
+                )
+                (1): CifNetConvLayer(
+                  (convolution): Conv2d(64, 64, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+                  (normalization): BatchNorm2d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+                  (activation): SiLU()
+                )
+              )
+            )
+            (7): CifNetBasicLayer(
+              (shortcut): Identity()
+              (layer): Sequential(
+                (0): CifNetConvLayer(
+                  (convolution): Conv2d(64, 64, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+                  (normalization): BatchNorm2d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+                  (activation): SiLU()
+                )
+                (1): CifNetConvLayer(
+                  (convolution): Conv2d(64, 64, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+                  (normalization): BatchNorm2d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+                  (activation): SiLU()
+                )
+              )
+            )
+            (8): CifNetBasicLayer(
+              (shortcut): Identity()
+              (layer): Sequential(
+                (0): CifNetConvLayer(
+                  (convolution): Conv2d(64, 64, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+                  (normalization): BatchNorm2d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+                  (activation): SiLU()
+                )
+                (1): CifNetConvLayer(
+                  (convolution): Conv2d(64, 64, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+                  (normalization): BatchNorm2d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+                  (activation): SiLU()
+                )
+              )
+            )
+            (9): CifNetBasicLayer(
+              (shortcut): Identity()
+              (layer): Sequential(
+                (0): CifNetConvLayer(
+                  (convolution): Conv2d(64, 64, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+                  (normalization): BatchNorm2d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+                  (activation): SiLU()
+                )
+                (1): CifNetConvLayer(
+                  (convolution): Conv2d(64, 64, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+                  (normalization): BatchNorm2d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+                  (activation): SiLU()
+                )
+              )
+            )
+            (10): CifNetBasicLayer(
+              (shortcut): Identity()
+              (layer): Sequential(
+                (0): CifNetConvLayer(
+                  (convolution): Conv2d(64, 64, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+                  (normalization): BatchNorm2d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+                  (activation): SiLU()
+                )
+                (1): CifNetConvLayer(
+                  (convolution): Conv2d(64, 64, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+                  (normalization): BatchNorm2d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+                  (activation): SiLU()
+                )
+              )
+            )
+            (11): CifNetBasicLayer(
+              (shortcut): Identity()
+              (layer): Sequential(
+                (0): CifNetConvLayer(
+                  (convolution): Conv2d(64, 64, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+                  (normalization): BatchNorm2d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+                  (activation): SiLU()
+                )
+                (1): CifNetConvLayer(
+                  (convolution): Conv2d(64, 64, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+                  (normalization): BatchNorm2d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+                  (activation): SiLU()
+                )
+              )
+            )
+            (12): CifNetBasicLayer(
+              (shortcut): Identity()
+              (layer): Sequential(
+                (0): CifNetConvLayer(
+                  (convolution): Conv2d(64, 64, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+                  (normalization): BatchNorm2d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+                  (activation): SiLU()
+                )
+                (1): CifNetConvLayer(
+                  (convolution): Conv2d(64, 64, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+                  (normalization): BatchNorm2d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+                  (activation): SiLU()
+                )
+              )
+            )
+            (13): CifNetBasicLayer(
+              (shortcut): Identity()
+              (layer): Sequential(
+                (0): CifNetConvLayer(
+                  (convolution): Conv2d(64, 64, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+                  (normalization): BatchNorm2d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+                  (activation): SiLU()
+                )
+                (1): CifNetConvLayer(
+                  (convolution): Conv2d(64, 64, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+                  (normalization): BatchNorm2d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+                  (activation): SiLU()
+                )
+              )
+            )
+            (14): CifNetBasicLayer(
+              (shortcut): Identity()
+              (layer): Sequential(
+                (0): CifNetConvLayer(
+                  (convolution): Conv2d(64, 64, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+                  (normalization): BatchNorm2d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+                  (activation): SiLU()
+                )
+                (1): CifNetConvLayer(
+                  (convolution): Conv2d(64, 64, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+                  (normalization): BatchNorm2d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+                  (activation): SiLU()
+                )
+              )
+            )
+            (15): CifNetBasicLayer(
+              (shortcut): Identity()
+              (layer): Sequential(
+                (0): CifNetConvLayer(
+                  (convolution): Conv2d(64, 64, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+                  (normalization): BatchNorm2d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+                  (activation): SiLU()
+                )
+                (1): CifNetConvLayer(
+                  (convolution): Conv2d(64, 64, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+                  (normalization): BatchNorm2d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+                  (activation): SiLU()
+                )
+              )
+            )
+          )
+        )
+        (3): CifNetStage(
+          (layers): Sequential(
+            (0): CifNetBasicLayer(
+              (shortcut): CifNetShortCut(
+                (convolution): Conv2d(64, 128, kernel_size=(1, 1), stride=(2, 2), bias=False)
+                (normalization): BatchNorm2d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+              )
+              (layer): Sequential(
+                (0): CifNetConvLayer(
+                  (convolution): Conv2d(64, 128, kernel_size=(3, 3), stride=(2, 2), padding=(1, 1), bias=False)
+                  (normalization): BatchNorm2d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+                  (activation): SiLU()
+                )
+                (1): CifNetConvLayer(
+                  (convolution): Conv2d(128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+                  (normalization): BatchNorm2d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+                  (activation): SiLU()
+                )
+              )
+            )
+            (1): CifNetBasicLayer(
+              (shortcut): Identity()
+              (layer): Sequential(
+                (0): CifNetConvLayer(
+                  (convolution): Conv2d(128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+                  (normalization): BatchNorm2d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+                  (activation): SiLU()
+                )
+                (1): CifNetConvLayer(
+                  (convolution): Conv2d(128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+                  (normalization): BatchNorm2d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+                  (activation): SiLU()
+                )
+              )
+            )
+            (2): CifNetBasicLayer(
+              (shortcut): Identity()
+              (layer): Sequential(
+                (0): CifNetConvLayer(
+                  (convolution): Conv2d(128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+                  (normalization): BatchNorm2d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+                  (activation): SiLU()
+                )
+                (1): CifNetConvLayer(
+                  (convolution): Conv2d(128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+                  (normalization): BatchNorm2d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+                  (activation): SiLU()
+                )
+              )
+            )
+            (3): CifNetBasicLayer(
+              (shortcut): Identity()
+              (layer): Sequential(
+                (0): CifNetConvLayer(
+                  (convolution): Conv2d(128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+                  (normalization): BatchNorm2d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+                  (activation): SiLU()
+                )
+                (1): CifNetConvLayer(
+                  (convolution): Conv2d(128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+                  (normalization): BatchNorm2d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+                  (activation): SiLU()
+                )
+              )
+            )
+            (4): CifNetBasicLayer(
+              (shortcut): Identity()
+              (layer): Sequential(
+                (0): CifNetConvLayer(
+                  (convolution): Conv2d(128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+                  (normalization): BatchNorm2d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+                  (activation): SiLU()
+                )
+                (1): CifNetConvLayer(
+                  (convolution): Conv2d(128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+                  (normalization): BatchNorm2d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+                  (activation): SiLU()
+                )
+              )
+            )
+            (5): CifNetBasicLayer(
+              (shortcut): Identity()
+              (layer): Sequential(
+                (0): CifNetConvLayer(
+                  (convolution): Conv2d(128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+                  (normalization): BatchNorm2d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+                  (activation): SiLU()
+                )
+                (1): CifNetConvLayer(
+                  (convolution): Conv2d(128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+                  (normalization): BatchNorm2d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+                  (activation): SiLU()
+                )
+              )
+            )
+            (6): CifNetBasicLayer(
+              (shortcut): Identity()
+              (layer): Sequential(
+                (0): CifNetConvLayer(
+                  (convolution): Conv2d(128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+                  (normalization): BatchNorm2d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+                  (activation): SiLU()
+                )
+                (1): CifNetConvLayer(
+                  (convolution): Conv2d(128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+                  (normalization): BatchNorm2d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+                  (activation): SiLU()
+                )
+              )
+            )
+            (7): CifNetBasicLayer(
+              (shortcut): Identity()
+              (layer): Sequential(
+                (0): CifNetConvLayer(
+                  (convolution): Conv2d(128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+                  (normalization): BatchNorm2d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+                  (activation): SiLU()
+                )
+                (1): CifNetConvLayer(
+                  (convolution): Conv2d(128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+                  (normalization): BatchNorm2d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+                  (activation): SiLU()
+                )
+              )
+            )
+            (8): CifNetBasicLayer(
+              (shortcut): Identity()
+              (layer): Sequential(
+                (0): CifNetConvLayer(
+                  (convolution): Conv2d(128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+                  (normalization): BatchNorm2d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+                  (activation): SiLU()
+                )
+                (1): CifNetConvLayer(
+                  (convolution): Conv2d(128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+                  (normalization): BatchNorm2d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+                  (activation): SiLU()
+                )
+              )
+            )
+            (9): CifNetBasicLayer(
+              (shortcut): Identity()
+              (layer): Sequential(
+                (0): CifNetConvLayer(
+                  (convolution): Conv2d(128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+                  (normalization): BatchNorm2d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+                  (activation): SiLU()
+                )
+                (1): CifNetConvLayer(
+                  (convolution): Conv2d(128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+                  (normalization): BatchNorm2d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+                  (activation): SiLU()
+                )
+              )
+            )
+            (10): CifNetBasicLayer(
+              (shortcut): Identity()
+              (layer): Sequential(
+                (0): CifNetConvLayer(
+                  (convolution): Conv2d(128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+                  (normalization): BatchNorm2d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+                  (activation): SiLU()
+                )
+                (1): CifNetConvLayer(
+                  (convolution): Conv2d(128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+                  (normalization): BatchNorm2d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+                  (activation): SiLU()
+                )
+              )
+            )
+            (11): CifNetBasicLayer(
+              (shortcut): Identity()
+              (layer): Sequential(
+                (0): CifNetConvLayer(
+                  (convolution): Conv2d(128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+                  (normalization): BatchNorm2d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+                  (activation): SiLU()
+                )
+                (1): CifNetConvLayer(
+                  (convolution): Conv2d(128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+                  (normalization): BatchNorm2d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+                  (activation): SiLU()
+                )
+              )
+            )
+          )
+        )
+      )
+    )
+    (pooler): AdaptiveAvgPool2d(output_size=(1, 1))
+  )
+  (classifier): Sequential(
+    (0): Flatten(start_dim=1, end_dim=-1)
+    (1): Linear(in_features=128, out_features=10, bias=True)
+  )
+)
+----------------------------------------------------------------
+        Layer (type)               Output Shape         Param #
+================================================================
+            Conv2d-1          [4, 16, 112, 112]           2,352
+       BatchNorm2d-2          [4, 16, 112, 112]              32
+              SiLU-3          [4, 16, 112, 112]               0
+   CifNetConvLayer-4          [4, 16, 112, 112]               0
+         MaxPool2d-5            [4, 16, 56, 56]               0
+  CifNetEmbeddings-6            [4, 16, 56, 56]               0
+            Conv2d-7            [4, 16, 56, 56]           2,304
+       BatchNorm2d-8            [4, 16, 56, 56]              32
+              SiLU-9            [4, 16, 56, 56]               0
+  CifNetConvLayer-10            [4, 16, 56, 56]               0
+           Conv2d-11            [4, 16, 56, 56]           2,304
+      BatchNorm2d-12            [4, 16, 56, 56]              32
+             SiLU-13            [4, 16, 56, 56]               0
+  CifNetConvLayer-14            [4, 16, 56, 56]               0
+         Identity-15            [4, 16, 56, 56]               0
+ CifNetBasicLayer-16            [4, 16, 56, 56]               0
+           Conv2d-17            [4, 16, 56, 56]           2,304
+      BatchNorm2d-18            [4, 16, 56, 56]              32
+             SiLU-19            [4, 16, 56, 56]               0
+  CifNetConvLayer-20            [4, 16, 56, 56]               0
+           Conv2d-21            [4, 16, 56, 56]           2,304
+      BatchNorm2d-22            [4, 16, 56, 56]              32
+             SiLU-23            [4, 16, 56, 56]               0
+  CifNetConvLayer-24            [4, 16, 56, 56]               0
+         Identity-25            [4, 16, 56, 56]               0
+ CifNetBasicLayer-26            [4, 16, 56, 56]               0
+           Conv2d-27            [4, 16, 56, 56]           2,304
+      BatchNorm2d-28            [4, 16, 56, 56]              32
+             SiLU-29            [4, 16, 56, 56]               0
+  CifNetConvLayer-30            [4, 16, 56, 56]               0
+           Conv2d-31            [4, 16, 56, 56]           2,304
+      BatchNorm2d-32            [4, 16, 56, 56]              32
+             SiLU-33            [4, 16, 56, 56]               0
+  CifNetConvLayer-34            [4, 16, 56, 56]               0
+         Identity-35            [4, 16, 56, 56]               0
+ CifNetBasicLayer-36            [4, 16, 56, 56]               0
+           Conv2d-37            [4, 16, 56, 56]           2,304
+      BatchNorm2d-38            [4, 16, 56, 56]              32
+             SiLU-39            [4, 16, 56, 56]               0
+  CifNetConvLayer-40            [4, 16, 56, 56]               0
+           Conv2d-41            [4, 16, 56, 56]           2,304
+      BatchNorm2d-42            [4, 16, 56, 56]              32
+             SiLU-43            [4, 16, 56, 56]               0
+  CifNetConvLayer-44            [4, 16, 56, 56]               0
+         Identity-45            [4, 16, 56, 56]               0
+ CifNetBasicLayer-46            [4, 16, 56, 56]               0
+           Conv2d-47            [4, 16, 56, 56]           2,304
+      BatchNorm2d-48            [4, 16, 56, 56]              32
+             SiLU-49            [4, 16, 56, 56]               0
+  CifNetConvLayer-50            [4, 16, 56, 56]               0
+           Conv2d-51            [4, 16, 56, 56]           2,304
+      BatchNorm2d-52            [4, 16, 56, 56]              32
+             SiLU-53            [4, 16, 56, 56]               0
+  CifNetConvLayer-54            [4, 16, 56, 56]               0
+         Identity-55            [4, 16, 56, 56]               0
+ CifNetBasicLayer-56            [4, 16, 56, 56]               0
+           Conv2d-57            [4, 16, 56, 56]           2,304
+      BatchNorm2d-58            [4, 16, 56, 56]              32
+             SiLU-59            [4, 16, 56, 56]               0
+  CifNetConvLayer-60            [4, 16, 56, 56]               0
+           Conv2d-61            [4, 16, 56, 56]           2,304
+      BatchNorm2d-62            [4, 16, 56, 56]              32
+             SiLU-63            [4, 16, 56, 56]               0
+  CifNetConvLayer-64            [4, 16, 56, 56]               0
+         Identity-65            [4, 16, 56, 56]               0
+ CifNetBasicLayer-66            [4, 16, 56, 56]               0
+           Conv2d-67            [4, 16, 56, 56]           2,304
+      BatchNorm2d-68            [4, 16, 56, 56]              32
+             SiLU-69            [4, 16, 56, 56]               0
+  CifNetConvLayer-70            [4, 16, 56, 56]               0
+           Conv2d-71            [4, 16, 56, 56]           2,304
+      BatchNorm2d-72            [4, 16, 56, 56]              32
+             SiLU-73            [4, 16, 56, 56]               0
+  CifNetConvLayer-74            [4, 16, 56, 56]               0
+         Identity-75            [4, 16, 56, 56]               0
+ CifNetBasicLayer-76            [4, 16, 56, 56]               0
+           Conv2d-77            [4, 16, 56, 56]           2,304
+      BatchNorm2d-78            [4, 16, 56, 56]              32
+             SiLU-79            [4, 16, 56, 56]               0
+  CifNetConvLayer-80            [4, 16, 56, 56]               0
+           Conv2d-81            [4, 16, 56, 56]           2,304
+      BatchNorm2d-82            [4, 16, 56, 56]              32
+             SiLU-83            [4, 16, 56, 56]               0
+  CifNetConvLayer-84            [4, 16, 56, 56]               0
+         Identity-85            [4, 16, 56, 56]               0
+ CifNetBasicLayer-86            [4, 16, 56, 56]               0
+      CifNetStage-87            [4, 16, 56, 56]               0
+           Conv2d-88            [4, 32, 28, 28]           4,608
+      BatchNorm2d-89            [4, 32, 28, 28]              64
+             SiLU-90            [4, 32, 28, 28]               0
+  CifNetConvLayer-91            [4, 32, 28, 28]               0
+           Conv2d-92            [4, 32, 28, 28]           9,216
+      BatchNorm2d-93            [4, 32, 28, 28]              64
+             SiLU-94            [4, 32, 28, 28]               0
+  CifNetConvLayer-95            [4, 32, 28, 28]               0
+           Conv2d-96            [4, 32, 28, 28]             512
+      BatchNorm2d-97            [4, 32, 28, 28]              64
+   CifNetShortCut-98            [4, 32, 28, 28]               0
+ CifNetBasicLayer-99            [4, 32, 28, 28]               0
+          Conv2d-100            [4, 32, 28, 28]           9,216
+     BatchNorm2d-101            [4, 32, 28, 28]              64
+            SiLU-102            [4, 32, 28, 28]               0
+ CifNetConvLayer-103            [4, 32, 28, 28]               0
+          Conv2d-104            [4, 32, 28, 28]           9,216
+     BatchNorm2d-105            [4, 32, 28, 28]              64
+            SiLU-106            [4, 32, 28, 28]               0
+ CifNetConvLayer-107            [4, 32, 28, 28]               0
+        Identity-108            [4, 32, 28, 28]               0
+CifNetBasicLayer-109            [4, 32, 28, 28]               0
+          Conv2d-110            [4, 32, 28, 28]           9,216
+     BatchNorm2d-111            [4, 32, 28, 28]              64
+            SiLU-112            [4, 32, 28, 28]               0
+ CifNetConvLayer-113            [4, 32, 28, 28]               0
+          Conv2d-114            [4, 32, 28, 28]           9,216
+     BatchNorm2d-115            [4, 32, 28, 28]              64
+            SiLU-116            [4, 32, 28, 28]               0
+ CifNetConvLayer-117            [4, 32, 28, 28]               0
+        Identity-118            [4, 32, 28, 28]               0
+CifNetBasicLayer-119            [4, 32, 28, 28]               0
+          Conv2d-120            [4, 32, 28, 28]           9,216
+     BatchNorm2d-121            [4, 32, 28, 28]              64
+            SiLU-122            [4, 32, 28, 28]               0
+ CifNetConvLayer-123            [4, 32, 28, 28]               0
+          Conv2d-124            [4, 32, 28, 28]           9,216
+     BatchNorm2d-125            [4, 32, 28, 28]              64
+            SiLU-126            [4, 32, 28, 28]               0
+ CifNetConvLayer-127            [4, 32, 28, 28]               0
+        Identity-128            [4, 32, 28, 28]               0
+CifNetBasicLayer-129            [4, 32, 28, 28]               0
+          Conv2d-130            [4, 32, 28, 28]           9,216
+     BatchNorm2d-131            [4, 32, 28, 28]              64
+            SiLU-132            [4, 32, 28, 28]               0
+ CifNetConvLayer-133            [4, 32, 28, 28]               0
+          Conv2d-134            [4, 32, 28, 28]           9,216
+     BatchNorm2d-135            [4, 32, 28, 28]              64
+            SiLU-136            [4, 32, 28, 28]               0
+ CifNetConvLayer-137            [4, 32, 28, 28]               0
+        Identity-138            [4, 32, 28, 28]               0
+CifNetBasicLayer-139            [4, 32, 28, 28]               0
+          Conv2d-140            [4, 32, 28, 28]           9,216
+     BatchNorm2d-141            [4, 32, 28, 28]              64
+            SiLU-142            [4, 32, 28, 28]               0
+ CifNetConvLayer-143            [4, 32, 28, 28]               0
+          Conv2d-144            [4, 32, 28, 28]           9,216
+     BatchNorm2d-145            [4, 32, 28, 28]              64
+            SiLU-146            [4, 32, 28, 28]               0
+ CifNetConvLayer-147            [4, 32, 28, 28]               0
+        Identity-148            [4, 32, 28, 28]               0
+CifNetBasicLayer-149            [4, 32, 28, 28]               0
+          Conv2d-150            [4, 32, 28, 28]           9,216
+     BatchNorm2d-151            [4, 32, 28, 28]              64
+            SiLU-152            [4, 32, 28, 28]               0
+ CifNetConvLayer-153            [4, 32, 28, 28]               0
+          Conv2d-154            [4, 32, 28, 28]           9,216
+     BatchNorm2d-155            [4, 32, 28, 28]              64
+            SiLU-156            [4, 32, 28, 28]               0
+ CifNetConvLayer-157            [4, 32, 28, 28]               0
+        Identity-158            [4, 32, 28, 28]               0
+CifNetBasicLayer-159            [4, 32, 28, 28]               0
+          Conv2d-160            [4, 32, 28, 28]           9,216
+     BatchNorm2d-161            [4, 32, 28, 28]              64
+            SiLU-162            [4, 32, 28, 28]               0
+ CifNetConvLayer-163            [4, 32, 28, 28]               0
+          Conv2d-164            [4, 32, 28, 28]           9,216
+     BatchNorm2d-165            [4, 32, 28, 28]              64
+            SiLU-166            [4, 32, 28, 28]               0
+ CifNetConvLayer-167            [4, 32, 28, 28]               0
+        Identity-168            [4, 32, 28, 28]               0
+CifNetBasicLayer-169            [4, 32, 28, 28]               0
+          Conv2d-170            [4, 32, 28, 28]           9,216
+     BatchNorm2d-171            [4, 32, 28, 28]              64
+            SiLU-172            [4, 32, 28, 28]               0
+ CifNetConvLayer-173            [4, 32, 28, 28]               0
+          Conv2d-174            [4, 32, 28, 28]           9,216
+     BatchNorm2d-175            [4, 32, 28, 28]              64
+            SiLU-176            [4, 32, 28, 28]               0
+ CifNetConvLayer-177            [4, 32, 28, 28]               0
+        Identity-178            [4, 32, 28, 28]               0
+CifNetBasicLayer-179            [4, 32, 28, 28]               0
+          Conv2d-180            [4, 32, 28, 28]           9,216
+     BatchNorm2d-181            [4, 32, 28, 28]              64
+            SiLU-182            [4, 32, 28, 28]               0
+ CifNetConvLayer-183            [4, 32, 28, 28]               0
+          Conv2d-184            [4, 32, 28, 28]           9,216
+     BatchNorm2d-185            [4, 32, 28, 28]              64
+            SiLU-186            [4, 32, 28, 28]               0
+ CifNetConvLayer-187            [4, 32, 28, 28]               0
+        Identity-188            [4, 32, 28, 28]               0
+CifNetBasicLayer-189            [4, 32, 28, 28]               0
+          Conv2d-190            [4, 32, 28, 28]           9,216
+     BatchNorm2d-191            [4, 32, 28, 28]              64
+            SiLU-192            [4, 32, 28, 28]               0
+ CifNetConvLayer-193            [4, 32, 28, 28]               0
+          Conv2d-194            [4, 32, 28, 28]           9,216
+     BatchNorm2d-195            [4, 32, 28, 28]              64
+            SiLU-196            [4, 32, 28, 28]               0
+ CifNetConvLayer-197            [4, 32, 28, 28]               0
+        Identity-198            [4, 32, 28, 28]               0
+CifNetBasicLayer-199            [4, 32, 28, 28]               0
+          Conv2d-200            [4, 32, 28, 28]           9,216
+     BatchNorm2d-201            [4, 32, 28, 28]              64
+            SiLU-202            [4, 32, 28, 28]               0
+ CifNetConvLayer-203            [4, 32, 28, 28]               0
+          Conv2d-204            [4, 32, 28, 28]           9,216
+     BatchNorm2d-205            [4, 32, 28, 28]              64
+            SiLU-206            [4, 32, 28, 28]               0
+ CifNetConvLayer-207            [4, 32, 28, 28]               0
+        Identity-208            [4, 32, 28, 28]               0
+CifNetBasicLayer-209            [4, 32, 28, 28]               0
+     CifNetStage-210            [4, 32, 28, 28]               0
+          Conv2d-211            [4, 64, 14, 14]          18,432
+     BatchNorm2d-212            [4, 64, 14, 14]             128
+            SiLU-213            [4, 64, 14, 14]               0
+ CifNetConvLayer-214            [4, 64, 14, 14]               0
+          Conv2d-215            [4, 64, 14, 14]          36,864
+     BatchNorm2d-216            [4, 64, 14, 14]             128
+            SiLU-217            [4, 64, 14, 14]               0
+ CifNetConvLayer-218            [4, 64, 14, 14]               0
+          Conv2d-219            [4, 64, 14, 14]           2,048
+     BatchNorm2d-220            [4, 64, 14, 14]             128
+  CifNetShortCut-221            [4, 64, 14, 14]               0
+CifNetBasicLayer-222            [4, 64, 14, 14]               0
+          Conv2d-223            [4, 64, 14, 14]          36,864
+     BatchNorm2d-224            [4, 64, 14, 14]             128
+            SiLU-225            [4, 64, 14, 14]               0
+ CifNetConvLayer-226            [4, 64, 14, 14]               0
+          Conv2d-227            [4, 64, 14, 14]          36,864
+     BatchNorm2d-228            [4, 64, 14, 14]             128
+            SiLU-229            [4, 64, 14, 14]               0
+ CifNetConvLayer-230            [4, 64, 14, 14]               0
+        Identity-231            [4, 64, 14, 14]               0
+CifNetBasicLayer-232            [4, 64, 14, 14]               0
+          Conv2d-233            [4, 64, 14, 14]          36,864
+     BatchNorm2d-234            [4, 64, 14, 14]             128
+            SiLU-235            [4, 64, 14, 14]               0
+ CifNetConvLayer-236            [4, 64, 14, 14]               0
+          Conv2d-237            [4, 64, 14, 14]          36,864
+     BatchNorm2d-238            [4, 64, 14, 14]             128
+            SiLU-239            [4, 64, 14, 14]               0
+ CifNetConvLayer-240            [4, 64, 14, 14]               0
+        Identity-241            [4, 64, 14, 14]               0
+CifNetBasicLayer-242            [4, 64, 14, 14]               0
+          Conv2d-243            [4, 64, 14, 14]          36,864
+     BatchNorm2d-244            [4, 64, 14, 14]             128
+            SiLU-245            [4, 64, 14, 14]               0
+ CifNetConvLayer-246            [4, 64, 14, 14]               0
+          Conv2d-247            [4, 64, 14, 14]          36,864
+     BatchNorm2d-248            [4, 64, 14, 14]             128
+            SiLU-249            [4, 64, 14, 14]               0
+ CifNetConvLayer-250            [4, 64, 14, 14]               0
+        Identity-251            [4, 64, 14, 14]               0
+CifNetBasicLayer-252            [4, 64, 14, 14]               0
+          Conv2d-253            [4, 64, 14, 14]          36,864
+     BatchNorm2d-254            [4, 64, 14, 14]             128
+            SiLU-255            [4, 64, 14, 14]               0
+ CifNetConvLayer-256            [4, 64, 14, 14]               0
+          Conv2d-257            [4, 64, 14, 14]          36,864
+     BatchNorm2d-258            [4, 64, 14, 14]             128
+            SiLU-259            [4, 64, 14, 14]               0
+ CifNetConvLayer-260            [4, 64, 14, 14]               0
+        Identity-261            [4, 64, 14, 14]               0
+CifNetBasicLayer-262            [4, 64, 14, 14]               0
+          Conv2d-263            [4, 64, 14, 14]          36,864
+     BatchNorm2d-264            [4, 64, 14, 14]             128
+            SiLU-265            [4, 64, 14, 14]               0
+ CifNetConvLayer-266            [4, 64, 14, 14]               0
+          Conv2d-267            [4, 64, 14, 14]          36,864
+     BatchNorm2d-268            [4, 64, 14, 14]             128
+            SiLU-269            [4, 64, 14, 14]               0
+ CifNetConvLayer-270            [4, 64, 14, 14]               0
+        Identity-271            [4, 64, 14, 14]               0
+CifNetBasicLayer-272            [4, 64, 14, 14]               0
+          Conv2d-273            [4, 64, 14, 14]          36,864
+     BatchNorm2d-274            [4, 64, 14, 14]             128
+            SiLU-275            [4, 64, 14, 14]               0
+ CifNetConvLayer-276            [4, 64, 14, 14]               0
+          Conv2d-277            [4, 64, 14, 14]          36,864
+     BatchNorm2d-278            [4, 64, 14, 14]             128
+            SiLU-279            [4, 64, 14, 14]               0
+ CifNetConvLayer-280            [4, 64, 14, 14]               0
+        Identity-281            [4, 64, 14, 14]               0
+CifNetBasicLayer-282            [4, 64, 14, 14]               0
+          Conv2d-283            [4, 64, 14, 14]          36,864
+     BatchNorm2d-284            [4, 64, 14, 14]             128
+            SiLU-285            [4, 64, 14, 14]               0
+ CifNetConvLayer-286            [4, 64, 14, 14]               0
+          Conv2d-287            [4, 64, 14, 14]          36,864
+     BatchNorm2d-288            [4, 64, 14, 14]             128
+            SiLU-289            [4, 64, 14, 14]               0
+ CifNetConvLayer-290            [4, 64, 14, 14]               0
+        Identity-291            [4, 64, 14, 14]               0
+CifNetBasicLayer-292            [4, 64, 14, 14]               0
+          Conv2d-293            [4, 64, 14, 14]          36,864
+     BatchNorm2d-294            [4, 64, 14, 14]             128
+            SiLU-295            [4, 64, 14, 14]               0
+ CifNetConvLayer-296            [4, 64, 14, 14]               0
+          Conv2d-297            [4, 64, 14, 14]          36,864
+     BatchNorm2d-298            [4, 64, 14, 14]             128
+            SiLU-299            [4, 64, 14, 14]               0
+ CifNetConvLayer-300            [4, 64, 14, 14]               0
+        Identity-301            [4, 64, 14, 14]               0
+CifNetBasicLayer-302            [4, 64, 14, 14]               0
+          Conv2d-303            [4, 64, 14, 14]          36,864
+     BatchNorm2d-304            [4, 64, 14, 14]             128
+            SiLU-305            [4, 64, 14, 14]               0
+ CifNetConvLayer-306            [4, 64, 14, 14]               0
+          Conv2d-307            [4, 64, 14, 14]          36,864
+     BatchNorm2d-308            [4, 64, 14, 14]             128
+            SiLU-309            [4, 64, 14, 14]               0
+ CifNetConvLayer-310            [4, 64, 14, 14]               0
+        Identity-311            [4, 64, 14, 14]               0
+CifNetBasicLayer-312            [4, 64, 14, 14]               0
+          Conv2d-313            [4, 64, 14, 14]          36,864
+     BatchNorm2d-314            [4, 64, 14, 14]             128
+            SiLU-315            [4, 64, 14, 14]               0
+ CifNetConvLayer-316            [4, 64, 14, 14]               0
+          Conv2d-317            [4, 64, 14, 14]          36,864
+     BatchNorm2d-318            [4, 64, 14, 14]             128
+            SiLU-319            [4, 64, 14, 14]               0
+ CifNetConvLayer-320            [4, 64, 14, 14]               0
+        Identity-321            [4, 64, 14, 14]               0
+CifNetBasicLayer-322            [4, 64, 14, 14]               0
+          Conv2d-323            [4, 64, 14, 14]          36,864
+     BatchNorm2d-324            [4, 64, 14, 14]             128
+            SiLU-325            [4, 64, 14, 14]               0
+ CifNetConvLayer-326            [4, 64, 14, 14]               0
+          Conv2d-327            [4, 64, 14, 14]          36,864
+     BatchNorm2d-328            [4, 64, 14, 14]             128
+            SiLU-329            [4, 64, 14, 14]               0
+ CifNetConvLayer-330            [4, 64, 14, 14]               0
+        Identity-331            [4, 64, 14, 14]               0
+CifNetBasicLayer-332            [4, 64, 14, 14]               0
+          Conv2d-333            [4, 64, 14, 14]          36,864
+     BatchNorm2d-334            [4, 64, 14, 14]             128
+            SiLU-335            [4, 64, 14, 14]               0
+ CifNetConvLayer-336            [4, 64, 14, 14]               0
+          Conv2d-337            [4, 64, 14, 14]          36,864
+     BatchNorm2d-338            [4, 64, 14, 14]             128
+            SiLU-339            [4, 64, 14, 14]               0
+ CifNetConvLayer-340            [4, 64, 14, 14]               0
+        Identity-341            [4, 64, 14, 14]               0
+CifNetBasicLayer-342            [4, 64, 14, 14]               0
+          Conv2d-343            [4, 64, 14, 14]          36,864
+     BatchNorm2d-344            [4, 64, 14, 14]             128
+            SiLU-345            [4, 64, 14, 14]               0
+ CifNetConvLayer-346            [4, 64, 14, 14]               0
+          Conv2d-347            [4, 64, 14, 14]          36,864
+     BatchNorm2d-348            [4, 64, 14, 14]             128
+            SiLU-349            [4, 64, 14, 14]               0
+ CifNetConvLayer-350            [4, 64, 14, 14]               0
+        Identity-351            [4, 64, 14, 14]               0
+CifNetBasicLayer-352            [4, 64, 14, 14]               0
+          Conv2d-353            [4, 64, 14, 14]          36,864
+     BatchNorm2d-354            [4, 64, 14, 14]             128
+            SiLU-355            [4, 64, 14, 14]               0
+ CifNetConvLayer-356            [4, 64, 14, 14]               0
+          Conv2d-357            [4, 64, 14, 14]          36,864
+     BatchNorm2d-358            [4, 64, 14, 14]             128
+            SiLU-359            [4, 64, 14, 14]               0
+ CifNetConvLayer-360            [4, 64, 14, 14]               0
+        Identity-361            [4, 64, 14, 14]               0
+CifNetBasicLayer-362            [4, 64, 14, 14]               0
+          Conv2d-363            [4, 64, 14, 14]          36,864
+     BatchNorm2d-364            [4, 64, 14, 14]             128
+            SiLU-365            [4, 64, 14, 14]               0
+ CifNetConvLayer-366            [4, 64, 14, 14]               0
+          Conv2d-367            [4, 64, 14, 14]          36,864
+     BatchNorm2d-368            [4, 64, 14, 14]             128
+            SiLU-369            [4, 64, 14, 14]               0
+ CifNetConvLayer-370            [4, 64, 14, 14]               0
+        Identity-371            [4, 64, 14, 14]               0
+CifNetBasicLayer-372            [4, 64, 14, 14]               0
+     CifNetStage-373            [4, 64, 14, 14]               0
+          Conv2d-374             [4, 128, 7, 7]          73,728
+     BatchNorm2d-375             [4, 128, 7, 7]             256
+            SiLU-376             [4, 128, 7, 7]               0
+ CifNetConvLayer-377             [4, 128, 7, 7]               0
+          Conv2d-378             [4, 128, 7, 7]         147,456
+     BatchNorm2d-379             [4, 128, 7, 7]             256
+            SiLU-380             [4, 128, 7, 7]               0
+ CifNetConvLayer-381             [4, 128, 7, 7]               0
+          Conv2d-382             [4, 128, 7, 7]           8,192
+     BatchNorm2d-383             [4, 128, 7, 7]             256
+  CifNetShortCut-384             [4, 128, 7, 7]               0
+CifNetBasicLayer-385             [4, 128, 7, 7]               0
+          Conv2d-386             [4, 128, 7, 7]         147,456
+     BatchNorm2d-387             [4, 128, 7, 7]             256
+            SiLU-388             [4, 128, 7, 7]               0
+ CifNetConvLayer-389             [4, 128, 7, 7]               0
+          Conv2d-390             [4, 128, 7, 7]         147,456
+     BatchNorm2d-391             [4, 128, 7, 7]             256
+            SiLU-392             [4, 128, 7, 7]               0
+ CifNetConvLayer-393             [4, 128, 7, 7]               0
+        Identity-394             [4, 128, 7, 7]               0
+CifNetBasicLayer-395             [4, 128, 7, 7]               0
+          Conv2d-396             [4, 128, 7, 7]         147,456
+     BatchNorm2d-397             [4, 128, 7, 7]             256
+            SiLU-398             [4, 128, 7, 7]               0
+ CifNetConvLayer-399             [4, 128, 7, 7]               0
+          Conv2d-400             [4, 128, 7, 7]         147,456
+     BatchNorm2d-401             [4, 128, 7, 7]             256
+            SiLU-402             [4, 128, 7, 7]               0
+ CifNetConvLayer-403             [4, 128, 7, 7]               0
+        Identity-404             [4, 128, 7, 7]               0
+CifNetBasicLayer-405             [4, 128, 7, 7]               0
+          Conv2d-406             [4, 128, 7, 7]         147,456
+     BatchNorm2d-407             [4, 128, 7, 7]             256
+            SiLU-408             [4, 128, 7, 7]               0
+ CifNetConvLayer-409             [4, 128, 7, 7]               0
+          Conv2d-410             [4, 128, 7, 7]         147,456
+     BatchNorm2d-411             [4, 128, 7, 7]             256
+            SiLU-412             [4, 128, 7, 7]               0
+ CifNetConvLayer-413             [4, 128, 7, 7]               0
+        Identity-414             [4, 128, 7, 7]               0
+CifNetBasicLayer-415             [4, 128, 7, 7]               0
+          Conv2d-416             [4, 128, 7, 7]         147,456
+     BatchNorm2d-417             [4, 128, 7, 7]             256
+            SiLU-418             [4, 128, 7, 7]               0
+ CifNetConvLayer-419             [4, 128, 7, 7]               0
+          Conv2d-420             [4, 128, 7, 7]         147,456
+     BatchNorm2d-421             [4, 128, 7, 7]             256
+            SiLU-422             [4, 128, 7, 7]               0
+ CifNetConvLayer-423             [4, 128, 7, 7]               0
+        Identity-424             [4, 128, 7, 7]               0
+CifNetBasicLayer-425             [4, 128, 7, 7]               0
+          Conv2d-426             [4, 128, 7, 7]         147,456
+     BatchNorm2d-427             [4, 128, 7, 7]             256
+            SiLU-428             [4, 128, 7, 7]               0
+ CifNetConvLayer-429             [4, 128, 7, 7]               0
+          Conv2d-430             [4, 128, 7, 7]         147,456
+     BatchNorm2d-431             [4, 128, 7, 7]             256
+            SiLU-432             [4, 128, 7, 7]               0
+ CifNetConvLayer-433             [4, 128, 7, 7]               0
+        Identity-434             [4, 128, 7, 7]               0
+CifNetBasicLayer-435             [4, 128, 7, 7]               0
+          Conv2d-436             [4, 128, 7, 7]         147,456
+     BatchNorm2d-437             [4, 128, 7, 7]             256
+            SiLU-438             [4, 128, 7, 7]               0
+ CifNetConvLayer-439             [4, 128, 7, 7]               0
+          Conv2d-440             [4, 128, 7, 7]         147,456
+     BatchNorm2d-441             [4, 128, 7, 7]             256
+            SiLU-442             [4, 128, 7, 7]               0
+ CifNetConvLayer-443             [4, 128, 7, 7]               0
+        Identity-444             [4, 128, 7, 7]               0
+CifNetBasicLayer-445             [4, 128, 7, 7]               0
+          Conv2d-446             [4, 128, 7, 7]         147,456
+     BatchNorm2d-447             [4, 128, 7, 7]             256
+            SiLU-448             [4, 128, 7, 7]               0
+ CifNetConvLayer-449             [4, 128, 7, 7]               0
+          Conv2d-450             [4, 128, 7, 7]         147,456
+     BatchNorm2d-451             [4, 128, 7, 7]             256
+            SiLU-452             [4, 128, 7, 7]               0
+ CifNetConvLayer-453             [4, 128, 7, 7]               0
+        Identity-454             [4, 128, 7, 7]               0
+CifNetBasicLayer-455             [4, 128, 7, 7]               0
+          Conv2d-456             [4, 128, 7, 7]         147,456
+     BatchNorm2d-457             [4, 128, 7, 7]             256
+            SiLU-458             [4, 128, 7, 7]               0
+ CifNetConvLayer-459             [4, 128, 7, 7]               0
+          Conv2d-460             [4, 128, 7, 7]         147,456
+     BatchNorm2d-461             [4, 128, 7, 7]             256
+            SiLU-462             [4, 128, 7, 7]               0
+ CifNetConvLayer-463             [4, 128, 7, 7]               0
+        Identity-464             [4, 128, 7, 7]               0
+CifNetBasicLayer-465             [4, 128, 7, 7]               0
+          Conv2d-466             [4, 128, 7, 7]         147,456
+     BatchNorm2d-467             [4, 128, 7, 7]             256
+            SiLU-468             [4, 128, 7, 7]               0
+ CifNetConvLayer-469             [4, 128, 7, 7]               0
+          Conv2d-470             [4, 128, 7, 7]         147,456
+     BatchNorm2d-471             [4, 128, 7, 7]             256
+            SiLU-472             [4, 128, 7, 7]               0
+ CifNetConvLayer-473             [4, 128, 7, 7]               0
+        Identity-474             [4, 128, 7, 7]               0
+CifNetBasicLayer-475             [4, 128, 7, 7]               0
+          Conv2d-476             [4, 128, 7, 7]         147,456
+     BatchNorm2d-477             [4, 128, 7, 7]             256
+            SiLU-478             [4, 128, 7, 7]               0
+ CifNetConvLayer-479             [4, 128, 7, 7]               0
+          Conv2d-480             [4, 128, 7, 7]         147,456
+     BatchNorm2d-481             [4, 128, 7, 7]             256
+            SiLU-482             [4, 128, 7, 7]               0
+ CifNetConvLayer-483             [4, 128, 7, 7]               0
+        Identity-484             [4, 128, 7, 7]               0
+CifNetBasicLayer-485             [4, 128, 7, 7]               0
+          Conv2d-486             [4, 128, 7, 7]         147,456
+     BatchNorm2d-487             [4, 128, 7, 7]             256
+            SiLU-488             [4, 128, 7, 7]               0
+ CifNetConvLayer-489             [4, 128, 7, 7]               0
+          Conv2d-490             [4, 128, 7, 7]         147,456
+     BatchNorm2d-491             [4, 128, 7, 7]             256
+            SiLU-492             [4, 128, 7, 7]               0
+ CifNetConvLayer-493             [4, 128, 7, 7]               0
+        Identity-494             [4, 128, 7, 7]               0
+CifNetBasicLayer-495             [4, 128, 7, 7]               0
+     CifNetStage-496             [4, 128, 7, 7]               0
+   CifNetEncoder-497          [[-1, 128, 7, 7]]               0
+AdaptiveAvgPool2d-498             [4, 128, 1, 1]               0
+     CifNetModel-499  [[-1, 128, 7, 7], [-1, 128, 1, 1]]               0
+         Flatten-500                   [4, 128]               0
+          Linear-501                    [4, 10]           1,290
+================================================================
+Total params: 4,907,034
+Trainable params: 4,907,034
+Non-trainable params: 0
+----------------------------------------------------------------
+Input size (MB): 2.30
+Forward/backward pass size (MB): 337.79
+Params size (MB): 18.72
+Estimated Total Size (MB): 358.81
+----------------------------------------------------------------
